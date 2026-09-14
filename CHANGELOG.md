@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-rc.5
+
+- Sidebar drops register the original host directory, independently of conversation attachment mode.
+- Use an absolute path supplied by the drop, or ask for the original host directory through DSH's picker or a path field.
+- Scope file upload batches to conversations and verify original workspace paths in the recorded walkthrough.
+
+
 ## 0.3.0-rc.4
 
 - Keep drag hints visible between sparse native drag events; dismiss on destination exit, drop, Escape, blur or drag end.

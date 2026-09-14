@@ -51,7 +51,7 @@ export async function main(){
   else {
     const setup=await browser.newContext({viewport:{width:1280,height:800}}),setupPage=await setup.newPage();await setupPage.goto(url.href);
     console.log('在 DSH 配置模型并新建空白对话；准备阶段不录制。');
-    const terminal=readline.createInterface({input:process.stdin,output:process.stdout});await terminal.question('准备好后按 Enter：将发送测试消息并创建工作区副本。');terminal.close();
+    const terminal=readline.createInterface({input:process.stdin,output:process.stdout});await terminal.question('准备好后按 Enter：将发送测试消息并添加原目录工作区。');terminal.close();
     await setupPage.locator('[data-better-attach-toolbar]').waitFor({state:'visible',timeout:15000});target=setupPage.url();storageState=await setup.storageState();await setup.close();
   }
   context=await browser.newContext({viewport:{width:1280,height:800},locale:'zh-CN',storageState,recordVideo:{dir:output,size:{width:1280,height:800}}});videoPage=await context.newPage();await videoPage.goto(target);
@@ -71,7 +71,14 @@ export async function main(){
   await note('02 / 图片进入对话','真实图片进入原生 DSH 图像通道，等待模型识别。');await drop(tree.filter(n=>n.name==='still-life.png'));await send('请识别这张图片中杯子、植物、本子的颜色和种类，用中文简短回答。',['蓝','多肉']);report.steps.push({name:'image',visibleEvidence:true});await evidence('02-image-response');
   await note('03 / 文件进入对话','复制模式在发送时保存文件，由模型读取原文。');await drop(tree.filter(n=>n.name==='note.md'));await confirm();await send('请读取刚添加的便笺，给出项目代号、交付数量和验收口令。',['青岚-731']);report.steps.push({name:'file',visibleEvidence:true});await evidence('03-file-response');
   await note('04 / 文件夹进入对话','一个目录一张卡片，保留文件层级和空目录。');await drop(tree.filter(n=>n.name==='folder'));await videoPage.getByRole('button',{name:'folder/README.md',exact:true}).waitFor();await videoPage.getByRole('button',{name:'folder/src/answer.txt',exact:true}).waitFor();await evidence('04-folder-review');await confirm();await send('请读取刚添加目录中的 README 和它指定的入口文件，回答校验短语。',['纸舟沿河行']);report.steps.push({name:'folder',visibleEvidence:true});await evidence('05-folder-response');
-  await note('05 / 文件夹进入侧栏','同一个文件夹投放到侧栏，成为独立工作区副本。');await drop(tree.filter(n=>n.name==='folder'),true);await click(videoPage.locator('.ba-dialog .ba-primary'));await videoPage.getByRole('dialog',{name:/工作区已添加|Workspace added/}).waitFor({state:'visible',timeout:60000});report.steps.push({name:'workspace',successDialog:true});await evidence('06-workspace');await click(videoPage.locator('.ba-dialog-head .ba-icon'));
+  await note('05 / 文件夹进入侧栏','工作区直接使用原目录；浏览器未提供路径时，在此确认主机目录。');
+  const workspaceRequests=[];const watchWorkspace=request=>{if(/\/batches(?:\/|$)/.test(new URL(request.url()).pathname)&&['POST','PUT'].includes(request.method()))workspaceRequests.push(request.method());};videoPage.on('request',watchWorkspace);
+  await drop(tree.filter(n=>n.name==='folder'),true);
+  await videoPage.locator('.ba-dialog input[type="text"]').fill(path.join(fixtureRoot,'folder'));await click(videoPage.locator('.ba-dialog .ba-primary'));
+  await videoPage.getByRole('dialog',{name:/工作区已添加|Workspace added/}).waitFor({state:'visible',timeout:60000});
+  const original=await fs.realpath(path.join(fixtureRoot,'folder'));if(await videoPage.locator('.ba-dialog .ba-path').innerText()!==original)throw new Error('Workspace does not reference the original directory');
+  videoPage.off('request',watchWorkspace);if(workspaceRequests.length)throw new Error('Workspace registration unexpectedly uploaded file batches');
+  report.steps.push({name:'workspace',successDialog:true,originalDirectoryVerified:true,fileBatchRequests:workspaceRequests.length});await evidence('06-workspace');await wait(1500);await click(videoPage.locator('.ba-dialog-head .ba-icon'));
   await note('06 / 原路径模式','只引用主机原文件；浏览器不公开绝对路径时，需要明确填写。');await click(videoPage.locator('[data-better-attach-toolbar] .ba-icon'));await videoPage.locator('.ba-dialog input[value="path"]').check();await videoPage.locator('.ba-dialog input[value="character"]').check();await evidence('07-path-settings');await click(videoPage.locator('.ba-dialog-head .ba-icon'));await drop(tree.filter(n=>n.name==='note.md'));await videoPage.locator('.ba-dialog input[type="text"], .ba-dialog input.ba-search').fill(path.join(fixtureRoot,'note.md'));await confirm();report.steps.push({name:'path',added:true});await evidence('08-path-card');
   await note('录制完成','以上回复与工作区均来自真实 DSH；说明牌不属于插件。');await wait(2500);report.status='recorded';
  }catch(error){report.error=redact(error.message);console.error(report.error);if(videoPage)await fs.writeFile(path.join(output,'page.txt'),redact(await videoPage.locator('body').innerText())).catch(()=>{});}finally{

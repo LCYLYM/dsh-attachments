@@ -33,3 +33,12 @@ test('drop hint survives sparse events, preserves content, and clears on leave o
     emit('dragover');dispose();await paint();assert.equal(document.querySelector('.ba-drop-overlay'),null);
   }finally{dispose();manager.dispose();}
 });
+
+test('sidebar drop in both attachment modes opens original-directory registration without enumeration',()=>{
+ for(const mode of ['copy','path']){
+  reset();const manager=new AttachmentManager();manager.preferences.mode=mode;const area=document.createElement('div');document.body.append(area);area.getBoundingClientRect=()=>({left:0,top:0,right:200,bottom:800,width:200,height:800});let enumerated=false;
+  const file={name:'project'},dt={types:['Files'],files:[file],items:[{kind:'file',getAsFile:()=>file,webkitGetAsEntry:()=>({name:'project',isDirectory:true,fullPath:'/project',createReader:()=>{enumerated=true;throw new Error('must not enumerate');}})}]};
+  const dispose=bindDrops({manager,getSession:()=>null,getSidebar:()=>area,getConversation:()=>null});const ev=new dom.window.MouseEvent('drop',{bubbles:true,cancelable:true,clientX:100,clientY:100});Object.defineProperty(ev,'dataTransfer',{value:dt});area.dispatchEvent(ev);
+  assert.equal(ev.defaultPrevented,true);assert.equal(enumerated,false);assert.equal(manager.records.size,0);const view=document.querySelector('dialog');assert.ok(view.querySelector('input[type=text]'));assert.equal(view.querySelector('input[type=checkbox]'),null);assert.equal(view.querySelector('.ba-file-list'),null);view.close();dispose();manager.dispose();
+ }
+});

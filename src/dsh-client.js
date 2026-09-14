@@ -35,6 +35,7 @@ export function createDshPlugin(React,cssText){
     const current=()=>{const value=sessions.list?.getSnapshot?.().current;return typeof value==='string'?value:activeSession;};
     const manager=new AttachmentManager({
       nativeImages:true,
+      pickHostDirectory:()=>{const ui=ctx.get('uiWorkspace');assert(typeof ui?.pickDirectory==='function','directory-picker-unavailable','Choose a directory by entering its host path');return ui.pickDirectory();},
       onNativeImages:(id,files)=>{const drafts=conversation.createDrafts(id,files);if(!inputFor(id).addAttachments(drafts.map(d=>d.id))){for(const d of drafts)conversation.releaseDraftAttachment(d.id);throw new Error(t('blocked'));}},
       isEditable:id=>{try{return inputFor(id).state.getSnapshot().phase==='plain';}catch{return false;}},
       onAdd:r=>addReference(inputFor(r.sessionId),r),

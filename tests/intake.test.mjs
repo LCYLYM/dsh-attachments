@@ -15,3 +15,13 @@ test('aborted scan produces no partial accepted selection',async()=>{const c=new
 test('picker fallback preserves relative path but admits empty-dir limitation',()=>{const f=new File(['x'],'x');Object.defineProperty(f,'webkitRelativePath',{value:'p/a/x'});const s=pickList([f]);assert.equal(s.files[0].path,'p/a/x');assert.deepEqual(s.directories,['p/a','p']);assert.equal(s.emptyDirectoriesSupported,false);});
 test('capture DataTransfer entries synchronously, ignore internal text drags',()=>{let called=0;const dt={types:['Files'],items:[{kind:'file',webkitGetAsEntry(){called++;return directory('p',[]);}}],files:[]};assert.equal(captureDrop(dt).hasDirectory,true);assert.equal(called,1);assert.equal(isExternalFiles({types:['text/plain'],items:[{kind:'string'}]}),false);assert.equal(isExternalFiles(dt),true);});
 test('fallback supports browser FileList without directory API',async()=>{const f=new File(['x'],'x.txt');const r=await readDrop({entries:[],files:[f]});assert.equal(r.files[0].file,f);assert.equal(r.emptyDirectoriesSupported,false);});
+
+test('workspace metadata uses only an explicit absolute host path',async()=>{
+ const {workspaceDrop}=await import('../lib/intake.js');
+ assert.equal(workspaceDrop({files:[{name:'project',path:'/host/project'}]}).path,'/host/project');
+ assert.equal(workspaceDrop({getData:()=> 'file:///host/my%20project'}).path,'/host/my project');
+ assert.equal(workspaceDrop({items:[{kind:'file',webkitGetAsEntry:()=>({name:'project',isDirectory:true,fullPath:'/project'})}]}).path,null);
+ assert.throws(()=>workspaceDrop({files:[{name:'a'},{name:'b'}]}));
+ assert.throws(()=>workspaceDrop({getData:()=> 'https://example.com/project'}));
+ assert.throws(()=>workspaceDrop({items:[{kind:'file',webkitGetAsEntry:()=>({name:'file',isFile:true})}]}));
+});

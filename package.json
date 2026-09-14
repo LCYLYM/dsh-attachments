@@ -1,6 +1,6 @@
 {
   "name": "dsh-multimedia-webui-input",
-  "version": "0.3.0-rc.4",
+  "version": "0.3.0-rc.5",
   "description": "Better Attach: intentional folder drops, previews and copy-on-send attachments for DeepSeek Harness.",
   "type": "module",
   "license": "MIT",
