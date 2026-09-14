@@ -2,7 +2,7 @@
 
 <img src="assets/logo.svg" width="64" alt="Better Attach">
 
-**Drop a folder into a conversation to attach it. Drop it into the sidebar to create a workspace.**
+**Drop a folder into a conversation to attach it. Drop it into the sidebar to use the original directory as a workspace.**
 
 [简体中文](README.zh.md) · [Compatibility](docs/COMPATIBILITY.md) · [Verification](docs/ACCEPTANCE.md) · [Plugin directories](docs/MARKETPLACES.md)
 
@@ -13,7 +13,7 @@ Folder review, file previews and copy/path settings for [DeepSeek Harness](https
 <!-- recording:start -->
 ![Real DSH walkthrough](docs/assets/walkthrough.gif)
 
-[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls.
+[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls. Only the DSH webpage is recorded.
 <!-- recording:end -->
 
 ## Try it locally
@@ -33,15 +33,16 @@ For an isolated installation, set `DSH_HOME` to a new directory first. Plugin at
 
 ## Choose how files enter DSH
 
-| Destination | Copy files (default) | Reference paths |
+Conversation attachments have two modes:
+
+| Conversation attachment mode | Adding files | Later source edits |
 | --- | --- | --- |
-| Conversation | Review, stage one card, copy on send | Validate and reference the host path |
-| Sidebar | Register the original host directory | Register the original host directory |
-| Later source edits | Saved copies stay independent | Reads use the current original |
+| Copy files (default) | Review, stage one card, copy on send | Saved copies stay independent |
+| Reference paths | Validate and reference the host path | Reads use the current original |
 
-Sidebar registration is independent of conversation attachment mode. An absolute original path in the drop is registered directly; otherwise select or enter the original directory on the DSH host.
+**The sidebar always registers the original host directory as a workspace.** An absolute original path in the drop is registered directly; otherwise select or enter the original directory on the DSH host.
 
-Choose a mode in **Settings → Better Attach** or **Attachment settings** beside the composer. Ordinary browsers generally omit original absolute paths; conversation reference mode asks for an explicit path on the DSH host.
+Choose the conversation attachment mode in **Settings → Better Attach** or **Attachment settings** beside the composer. Ordinary browsers generally omit original absolute paths; conversation reference mode asks for an explicit path on the DSH host.
 
 ## Review before sending
 

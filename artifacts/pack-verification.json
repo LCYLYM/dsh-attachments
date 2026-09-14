@@ -1,9 +1,10 @@
 {
-  "archive": "dsh-multimedia-webui-input-0.3.0-rc.2.tgz",
+  "archive": "dsh-multimedia-webui-input-0.3.0-rc.5.tgz",
   "productionExcludesRecording": true,
-  "productionExcludesDemo": true,
-  "testsPassed": 72,
+  "testsPassed": 75,
   "testsFailed": 0,
-  "builtClientSHA256": "f2791341849987e38ca83554281ae0f48bfaa36af4190b816d26f1f7bfb1ecb2",
-  "dependencySetup": "Extracted package tests reuse installed development dependencies."
+  "fileCount": 21,
+  "archiveBytes": 253700,
+  "builtClientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
+  "readmesMatchWorkingTree": true
 }

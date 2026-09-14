@@ -1,10 +1,10 @@
 {
-  "recorded": false,
-  "reason": "Managed browser returned ERR_BLOCKED_BY_CLIENT on retry of http://127.0.0.1:3080",
-  "alternativeNetworkRouteAttempted": false,
-  "recorderEndToEndTested": false,
+  "recorded": true,
+  "recorderEndToEndTested": true,
   "helperUnitTestsPassed": 4,
-  "directVisionAPIPassed": true,
-  "gifExists": false,
-  "mp4Exists": false
+  "gifExists": true,
+  "mp4Exists": true,
+  "captureSurface": "DSH webpage viewport only",
+  "clientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
+  "evidence": "recording.json"
 }

@@ -1,17 +1,11 @@
-# Product decisions / 自问式设计审查
+# Product decisions
 
-**为什么不是重复造官方文件上传？** 官方已支持普通文件。Better Attach 重点是目录整体、拖放目标、复制时机、原路径语义和恢复流程，不宣称独占普通文件支持。
+Conversation attachments support copying on send or referencing an original host path. The selected mode applies to the conversation only. References identify the original file explicitly and recheck its identity before reading.
 
-**复制还是引用由谁决定？** 用户在设置中决定。默认复制；引用模式必须显示原文件位置和含义，不可静默降级成复制。浏览器无法获得绝对路径时明确输入，不以同名文件猜测。
+Sidebar drops register the original host directory through WorkspaceController. An absolute original path supplied by a drop is used directly. When the browser omits it, the user selects or enters the host directory. File upload batches belong to conversations.
 
-**为何侧栏不是立即注册？** 浏览器目录上传对应的是副本，原目录注册对应的是主机路径。两者用途不同，确认界面必须明确。调用真正的 WorkspaceController 后才显示成功。
+Standalone images use native DSH image drafts. Mixed selections and directories preserve their structure as path attachments. File previews are bounded to supported text and raster formats; other formats offer a download.
 
-**图片会不会失去视觉能力？** 纯图片保留官方通道，选择器的纯图片也接入官方草稿。目录内和混合批次保持路径附件，不伪称模型收到原生图像。
+The default appearance follows the host. Optional backgrounds decorate attachment panels, with keyboard access and reduced-motion support. Upload retries preserve completed files; removing a draft and deleting saved copies are distinct operations.
 
-**背景是否干扰工作？** 默认无图；两种可选风格只装饰附件面板。遵守宿主颜色变量和减少动态效果，不在正文背后铺图，不增加持续动画。
-
-**各种文件如何预览？** 按确实具备的能力展示。文本及栅格图本地预览，目录筛选；PDF/Office/媒体/压缩包用分类图标和下载，不造不可用的万能解析器。
-
-**失败会不会丢草稿或删原件？** 副本按文件重试；路径发送前复检。移除草稿与清理副本分离；引用从不删除原文件。已保存路径可通过记录重新附加。
-
-**本轮交付能宣称什么？** 两个真实 DSH CLI 下各 9 项宿主验证、72 项自动测试；不能宣称真实浏览器、模型或桌面系统通过。保留 rc 标记并交付可复跑验收脚本。
+Current verification and remaining platform coverage are recorded in [ACCEPTANCE.md](ACCEPTANCE.md). GIF and MP4 capture the actual DSH page and model responses; their drag events are automated.
