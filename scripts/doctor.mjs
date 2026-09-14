@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';import path from 'node:path';import {fileURLTo
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const checks=[];const check=(name,ok,detail='')=>checks.push({name,ok:!!ok,detail});
 const pkg=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
-for(const file of ['lib/index.js','lib/client.js','src/dsh-client.js','lib/ui.css','cordis.patch.yml','LICENSE','README.md','README.zh.md','docs/COMPATIBILITY.md']){try{await fs.access(path.join(root,file));check('packaged:'+file,true);}catch{check('packaged:'+file,false);}}
+for(const file of ['lib/index.js','lib/client.js','src/dsh-client.js','lib/ui.css','cordis.patch.yml','LICENSE','README.md','docs/COMPATIBILITY.md']){try{await fs.access(path.join(root,file));check('packaged:'+file,true);}catch{check('packaged:'+file,false);}}
 check('identity-preserved',pkg.name==='dsh-multimedia-webui-input');
 check('explicit-prerelease',pkg.version.includes('-rc.')&&pkg.publishConfig?.tag==='next');
 check('zero-third-party-runtime-dependencies',!Object.keys(pkg.dependencies??{}).length);

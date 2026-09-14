@@ -3,8 +3,8 @@
   "productionExcludesRecording": true,
   "testsPassed": 76,
   "testsFailed": 0,
-  "fileCount": 21,
-  "archiveBytes": 253754,
+  "fileCount": 20,
+  "archiveBytes": 253220,
   "builtClientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
   "readmesMatchWorkingTree": true
 }

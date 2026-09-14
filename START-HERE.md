@@ -1,6 +1,6 @@
 # Better Attach 0.3.0-rc.5
 
-先看 [中文 README](README.zh.md)，或直接播放 [操作视频](docs/assets/walkthrough.mp4)。GIF、视频仅录制 DSH 网页，操作和模型回复来自真实宿主。
+先看 [中英文 README](README.md)，或直接播放 [操作视频](docs/assets/walkthrough.mp4)。GIF、视频仅录制 DSH 网页，操作和模型回复来自真实宿主。
 
 ## 安装
 
