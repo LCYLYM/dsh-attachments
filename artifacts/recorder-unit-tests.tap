@@ -1,7 +1,7 @@
-✔ standalone recorder admits only local URLs and redacts credentials (1.000799ms)
-✔ recording fixture tree contains real image bytes and directory children (7.012874ms)
-✔ temporary callout can update, stop and remove all its own DOM (58.02614ms)
-✔ production manifest and sources do not load recording or demo scripts (3.729946ms)
+✔ standalone recorder admits only local URLs and redacts credentials (0.790625ms)
+✔ recording fixture tree contains real image bytes and directory children (11.556625ms)
+✔ temporary callout can update, stop and remove all its own DOM (59.259667ms)
+✔ production manifest and sources do not load recording or demo scripts (4.991917ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,4 +9,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 382.411389
+ℹ duration_ms 828.386875

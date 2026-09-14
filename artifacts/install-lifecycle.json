@@ -1,0 +1,7 @@
+{
+  "officialAdd": true,
+  "officialRemove": true,
+  "restartWithoutPlugin": true,
+  "pluginInBootGraph": false,
+  "healthStatus": 404
+}

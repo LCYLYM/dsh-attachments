@@ -1,0 +1,34 @@
+{
+  "status": "recorded",
+  "syntheticOSDrop": true,
+  "realDSH": true,
+  "steps": [
+    {
+      "name": "image",
+      "visibleEvidence": true
+    },
+    {
+      "name": "file",
+      "visibleEvidence": true
+    },
+    {
+      "name": "folder",
+      "visibleEvidence": true
+    },
+    {
+      "name": "workspace",
+      "successDialog": true
+    },
+    {
+      "name": "path",
+      "added": true
+    }
+  ],
+  "startedAt": "2026-09-14T09:52:27.082Z",
+  "finishedAt": "2026-09-14T09:54:28.716Z",
+  "converted": true,
+  "clientSHA256": "99234475f9e95ad5957a78f4658ecc7a241db156b014c4b007e3fc62596ee11f",
+  "dshVersion": "0.1.5-rc.1",
+  "model": "deepseek-v4-flash-vision-exp",
+  "captureSurface": "DSH webpage viewport only"
+}

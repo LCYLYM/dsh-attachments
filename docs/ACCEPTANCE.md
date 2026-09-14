@@ -1,42 +1,30 @@
-# Acceptance / 验收
+# Better Attach 0.3.0-rc.3 验收
 
-## 本轮结果
+2026-09-14，macOS、Node.js v24.13.1、真实 DSH npm 发行包和 Chrome。自动化拖放与操作系统拖放分别记录。
 
-0.3.0-rc.2 新增独立录制脚本的 4 项单元测试通过（artifacts/recorder-unit-tests.tap）。生成的图片已通过真实模型 API 识别（artifacts/vision-api-check.json）；这不代表通过 DSH 页面录制。浏览器再次尝试仍被 ERR_BLOCKED_BY_CLIENT 阻止，当前没有实际 GIF/MP4。
-
-
-| 检查 | 实际结果 | 证据 |
+| ID | 需求 | 结果与证据 |
 | --- | --- | --- |
-| Node 核心、HTTP、存储、引用、编辑器契约、DOM 模拟 | 72 passed, 0 failed | artifacts/current-node-tests.tap |
-| DSH latest CLI 0.1.5-rc.1 | 9 项真实宿主联调通过 | artifacts/live-dsh-latest.json |
-| DSH next CLI 0.1.5-rc.2 | 9 项真实宿主联调通过 | artifacts/live-dsh.json |
-| 真实 DSH 图形界面 | 未运行成功 | ERR_BLOCKED_BY_CLIENT |
-| 实际模型回复、Windows/macOS 人工拖放 | 未执行 | 不作认证 |
+| A1 | 插件身份、Git 历史、官方安装 | PASS：起点 028dc1f 与远端一致；隔离 DSH_HOME 的官方 add/remove 成功 |
+| A2 | 对话文件/目录、预览、发送、重试和记录 | PASS：真实模型读文件/目录；真实 HTTP 存储；浏览器断线上传后点击重试保存成功 |
+| A3 | 侧栏副本与原路径工作区 | PASS：真实工作区注册接口、独立副本；页面成功提示与打开工作区 |
+| A4 | 两种模式、原生图片、图标与三种主题 | PASS：设置持久化、实际图像草稿与模型识别、浏览器主题与窄屏检查 |
+| A5 | 最新发行版真实 DSH 与模型 | PASS：latest/next 各 9 项宿主联调；latest 页面内模型读图、便笺与目录 |
+| A6 | 独立录制、GIF/MP4、Logo、中英 README、tags | PASS：网页视口录制，真实模型与文件调用，见 docs/assets |
+| A7 | 本地提交、源码 ZIP、TGZ 与 bundle | PASS：本地源码历史、npm 包与 Git bundle 随 ZIP 交付；SHA-256 清单可核对 |
+| A8 | OS 拖放、窄屏、深浅色和卸载 | BLOCKED：窄屏、深浅色和官方移除已验证；Finder/Explorer 跨窗口拖放待确认 |
 
-真实宿主测试通过官方 CLI 启动完整 web profile，额外挂载仅在临时目录存在的测试插件。它调用真实 SessionController、WorkspaceController，并通过 HTTP 上传字节和检查磁盘；没有替换这些宿主服务。客户端启动图和实际服务的脚本也经过检查。DOM 测试使用 jsdom 和显式服务替身，不能当作浏览器验收。
+## 当前证据
 
-9 项内容：客户端启动图与脚本、创建会话、插件路由、会话副本与空目录、附件记录、原路径引用、原目录注册、文件夹副本注册、清理不删除原文件。测试均不调用远程模型。
+- `artifacts/current-node-tests.tap`：72 项核心、存储、HTTP、引用、UI 契约测试通过。
+- `artifacts/live-dsh-latest.json` / `live-dsh.json`：DSH CLI 0.1.5-rc.1、0.1.5-rc.2 各 9 项真实宿主检查。
+- `artifacts/browser-acceptance.json`：9 项真实 Chrome 检查，包括上传中断与恢复；未捕获页面异常为 0。
+- `artifacts/recording.json`：实际网页录制步骤。模型识别图片中的杯子、多肉和笔记本；读取便笺口令“青岚-731”与目录口令“纸舟沿河行”。
+- `docs/assets/walkthrough.gif` / `walkthrough.mp4`：仅 DSH 网页视口，没有桌面及其他应用。
 
-历史 rc.1 的 20 项内存浏览器测试和截图没有作为本版证据复用；旧提交中仍可查看。
+宿主检查使用临时测试插件调用真实 SessionController、WorkspaceController，并验证文件落盘。UI 契约单测使用 jsdom；真实浏览器检查直接打开 DSH，不替换宿主服务。网络故障用例中断一次 PUT 后恢复真实连接。
 
-## 本地复跑
+## 验收边界
 
-根目录 `npm ci && npm run check`。
+原生 Finder 跨窗口拖放已尝试，但工具操作没有取得可靠的成功读回；自动化目录 DragEvent 不代替该项。原生 DSH 文件引用与插件附件共存、移除后保留原引用的浏览器用例已通过（artifacts/foreign-reference.json）。Windows、GitHub Actions 尚未实跑。完整发布验收保持 BLOCKED，候选包可供本机审阅与使用。
 
-`npm ci --prefix fixtures/dsh-latest && npm run test:live:latest`。
-
-`npm ci --prefix fixtures/dsh-next && npm run test:live:next`。
-
-真实宿主测试只向自动创建的临时 DSH_HOME 和测试目录写入，结束后清除测试文件；不会修改用户的默认 DSH_HOME。
-
-## 发版前的人工验收
-
-1. 安装到独立 DSH_HOME 并在浏览器打开原生 DSH，检查设置入口、深浅色、窄屏与键盘焦点。
-2. 拖普通文件和含空目录的文件夹到对话，检查预览、删除、重试、发送后清单。
-3. 拖文件夹到侧栏，检查复制副本与原目录注册两种流程，打开对应工作区。
-4. 设置引用路径，检查不存在路径、原文件修改、替换文件、复制路径、刷新后记录再附加。
-5. 发送纯图片，确认模型实际收到原生图像；再测试混合文件夹路径读取。
-6. 在 Finder/Explorer 人工拖放，确认没有浏览器导航或目标漂移。
-7. 卸载并重启，确认界面还原，已有文件保留。
-
-将实测结果及截图记录到 artifacts/native-acceptance.json，再运行 npm run release:check。此门禁继承自上传的候选版，不要求为本地开发申请权限。
+最终发布前按 `artifacts/native-acceptance.json` 补充各项真实证据，再运行 `npm run release:check`。验收门禁不影响本地安装、构建和打包。

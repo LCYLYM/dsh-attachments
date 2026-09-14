@@ -38,12 +38,12 @@
       "status": "passed"
     }
   ],
-  "clientSHA256": "f2791341849987e38ca83554281ae0f48bfaa36af4190b816d26f1f7bfb1ecb2",
-  "nodeVersion": "v24.19.0",
-  "os": "linux",
+  "clientSHA256": "99234475f9e95ad5957a78f4658ecc7a241db156b014c4b007e3fc62596ee11f",
+  "nodeVersion": "v24.13.1",
+  "os": "darwin",
   "realDSH": true,
   "dshVersion": "0.1.5-rc.1",
-  "testedAt": "2026-09-14T08:32:42.346Z",
-  "browser": "Not tested: ERR_BLOCKED_BY_CLIENT",
-  "logs": "dsh: all_proxy names a SOCKS proxy, which is not supported; connecting directly for that scheme — set an http:// or https:// proxy URL instead\ndsh web: http://127.0.0.1:3080/?token=REDACTED\n"
+  "testedAt": "2026-09-14T09:51:17.253Z",
+  "browser": "Not covered by this host-only test",
+  "logs": "dsh web: http://127.0.0.1:62845/?token=REDACTED\n"
 }

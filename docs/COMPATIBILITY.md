@@ -1,26 +1,34 @@
-# Compatibility / 安装与兼容
+# 安装与兼容
 
-本次真实安装：npm `@deepseek-ai/dsh@0.1.5-rc.1`（latest）和 `@deepseek-ai/dsh@0.1.5-rc.2`（next），Node v24.19.0，Linux。每版完成 9 项宿主验收，详见 ACCEPTANCE.md。默认 CLI 的依赖范围会拉取较新的内部组件；fixtures 中保留安装锁文件，不能只凭 CLI 版本推断所有依赖版本。
+2026-09-14 在 macOS、Node.js v24.13.1 上安装并测试 DSH CLI `0.1.5-rc.1`（latest）和 `0.1.5-rc.2`（next）。每版 9 项宿主联调通过；真实网页与模型操作在 latest 上验证。内部组件版本以 `fixtures/dsh-latest/package-lock.json` 和 `fixtures/dsh-next/package-lock.json` 为准。
 
-## 已修复的客户端依赖
+## 官方插件接口
 
-旧候选版声明已不存在的 `@deepseek-ai/dsh-client-runtime`。新版改用发行版的 session-controller、ui-renderer、ui-input-trigger、ui-conversation、ui-settings、ui-workspace。真实 Host 生成的客户端启动图包含本插件、所有声明依赖，并能通过 HTTP 返回构建后的插件脚本。
+插件使用 `dsh.bundle` 和 `dsh.client` 元数据，服务端挂载 `webServer`，从真实 `sessions`/`sessionController` 解析工作区。客户端通过 `conversation.input.left`、`conversation.input.dock`、`sidebar.footer.action` 与 `settings.section` 插槽挂载，通过 `inputTriggers` 异步序列化附件。
 
-UI 使用 settings.section、conversation.input.left、conversation.input.dock、sidebar.footer.action 这四个可追加插槽，保留官方图片和原生工作区界面。此处已做接口及 DOM 模拟测试，但没有渲染器浏览器验收结论。
+宿主接口和文件系统由真实 DSH 提供。浏览器录制使用自动化拖放事件；模型回复来自实际 DeepSeek API。
 
-## 安装和回退
+## 本地安装与卸载
 
-`sh install.sh` 或 PowerShell `./install.ps1` 调用官方 `dsh plugin --profile web add <checkout>`。使用固定路径存放解压目录。关闭再启动 DSH 后生效。
+```sh
+npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/better-attach
+npx --yes @deepseek-ai/dsh web
+```
 
-卸载运行 `dsh plugin --profile web remove dsh-multimedia-webui-input` 并重启。回退旧插件时，重新安装旧目录或旧 npm 包。不会自动删除原文件、工作区目录或插件副本。
+源码目录需长期保留。也可以将安装目标替换为交付 TGZ 的绝对路径。已有 DSH 命令时可使用随包安装脚本。
 
-如果希望隔离试用，可在新终端设置自己的 DSH_HOME 再运行安装和启动命令；不要覆盖原来的配置目录。真实验收脚本已自动这样处理。
+隔离试用时先设置 `DSH_HOME` 到新目录。插件的记录和工作区导入遵守这个目录。卸载并重启后界面入口移除，原文件及已保存附件保留：
 
-## 尚未验证
+```sh
+npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input
+```
 
-- 内置浏览器访问本地地址返回 ERR_BLOCKED_BY_CLIENT，未完成真实 DSH 页面渲染、截图或原生上传入口验收。
-- 无模型 API 凭证，未验证模型实际收图、工具读取与回复。
-- 无 Windows/macOS 实机，未验证 Finder/Explorer 人工目录拖放。
-- 未运行 GitHub Actions、发布 npm 或向市场提交收录。
+恢复旧版时安装旧目录或已发布的旧版本。官方 CLI 的本地安装、移除命令已在独立配置运行。
 
-路径模式在普通浏览器中需要明确输入 DSH 主机路径；上传副本不需要路径。仅支持同机回环同源 HTTP。PDF/Office/音视频当前仅下载。
+## 已验证与待确认
+
+已验证：真实 DSH 网页、原生图片发送与模型识别、普通文件和目录的真实读取、工作区复制注册、引用路径、设置持久化、预览、窄屏和上传失败重试。详见 [验收记录](ACCEPTANCE.md)。
+
+待确认：Finder/Explorer 跨窗口原生拖放、Windows 实机和 GitHub Actions。原生拖放尝试未取得可靠的成功读回，因此不以自动化事件替代该项。
+
+仅支持同机回环同源 HTTP；远程浏览器与反向代理部署不在此版范围。PDF、Office、音视频、压缩包提供下载。未发送的本地文件选择刷新后需要重选。

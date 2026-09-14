@@ -1,0 +1,47 @@
+{
+  "realDSH": true,
+  "syntheticDrop": true,
+  "checks": [
+    {
+      "name": "settings persist across reload",
+      "status": "PASS"
+    },
+    {
+      "name": "directory enumeration includes children and empty directories",
+      "status": "PASS"
+    },
+    {
+      "name": "text preview reads original bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "folder is a single composer card and can be removed",
+      "status": "PASS"
+    },
+    {
+      "name": "failed upload retains draft and retry saves real bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "path validation preserves dialog on missing file",
+      "status": "PASS"
+    },
+    {
+      "name": "appearance and narrow layouts",
+      "status": "PASS"
+    },
+    {
+      "name": "native dark colors reach attachment panels",
+      "status": "PASS"
+    },
+    {
+      "name": "no uncaught browser errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "clientSHA256": "99234475f9e95ad5957a78f4658ecc7a241db156b014c4b007e3fc62596ee11f",
+  "dshVersion": "0.1.5-rc.1",
+  "os": "darwin",
+  "nodeVersion": "v24.13.1"
+}

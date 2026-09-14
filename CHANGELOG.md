@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0-rc.3
+
+- Align attachment cards with the native composer so retry controls remain clickable.
+- Respect DSH_HOME for records and imported workspaces.
+- Canonicalize macOS test paths and allocate smoke-test ports dynamically.
+- Verify real image/file/folder model requests and workspace imports in DSH.
+- Repair directory drag events in the standalone recorder and validate directory children before sending.
+- Deliver webpage-only GIF/MP4, bilingual DSH documentation and a compact runtime package.
+
+
 ## 0.3.0-rc.2
 
 - Removed the integrated demo and demo launchers.

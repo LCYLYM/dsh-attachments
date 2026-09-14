@@ -1,97 +1,76 @@
-# Better Attach
+# Better Attach · DSH 附件与拖放
 
-<img src="assets/logo.svg" width="64" alt="Better Attach logo">
+<img src="assets/logo.svg" width="64" alt="Better Attach">
 
 **文件夹拖进对话，是附件；拖进侧栏，是工作区。**
 
-[English](README.md) · [安装与兼容](docs/COMPATIBILITY.md) · [测试证据](docs/ACCEPTANCE.md) · [设计决策](docs/DECISIONS.md)
+[English](README.md) · [安装与兼容](docs/COMPATIBILITY.md) · [验收记录](docs/ACCEPTANCE.md) · [市场收录](docs/MARKETPLACES.md)
 
-DeepSeek Harness 的附件插件。保留包名 `dsh-multimedia-webui-input`，在原仓库历史上升级为 **0.3.0-rc.2**。
+`dsh` · `dsh-plugin` · `deepseek-harness` · `attachments` · `drag-and-drop`
 
-本版已实际安装 DSH，并在默认发行版 `0.1.5-rc.1` 与 next 版 `0.1.5-rc.2` 上各通过 9 项真实宿主联调；72 项自动测试通过。真实浏览器页面、模型请求及 Finder/Explorer 人工拖放尚未验收，因此保留候选版标识。
+为 [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Harness) 提供目录检查、文件预览和两种附件处理方式。沿用 [dsh-attachments](https://github.com/LCYLYM/dsh-attachments) 的插件身份与 Git 历史，npm 包名为 `dsh-multimedia-webui-input`。
 
-## 用起来
+<!-- recording:start -->
+![真实 DSH 操作演示](docs/assets/walkthrough.gif)
 
-已有 DSH 和 Node.js 22.19+（或 24+），在解压目录执行：
+[观看 MP4](docs/assets/walkthrough.mp4) · 真实 DSH 与模型调用，自动化拖放。录制范围仅为 DSH 网页。
+<!-- recording:end -->
+
+## 安装试用
+
+版本 **0.3.0-rc.3**。需要 Node.js `^22.19.0 || >=24.0.0` 和 DSH。当前验证的 CLI 为 `0.1.5-rc.1`（latest）、`0.1.5-rc.2`（next）；完整组件版本由 fixtures 的锁文件固定。
+
+将源码解压到长期保留的目录，运行：
 
 ```sh
-# macOS / Linux
-sh install.sh
-# 重启宿主
- dsh web --no-open
+npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/better-attach
+npx --yes @deepseek-ai/dsh web
 ```
 
-Windows PowerShell：`./install.ps1`。也可直接运行：
+已安装 DSH 的用户也可执行 `sh install.sh`，Windows 使用 `./install.ps1`。修改插件后重启 DSH。交付的 TGZ 可作为同一安装命令的本地包路径。此候选版本以本地交付包试用，npm 公开版本以注册表为准。
 
-```sh
-dsh plugin --profile web add /absolute/path/to/better-attach
-```
+需要隔离试用时，先设置 `DSH_HOME` 指向一个新目录，再执行安装和启动命令。插件的记录与工作区导入保存在该目录下的 `better-attach/`；会话附件副本位于当前工作区的 `.dsh/tmp/attachments/better-attach-v2/`。
 
-安装采用 DSH 官方插件命令，不覆盖 DSH 核心文件。开发目录作为本地链接使用，请保留此目录；使用同包名旧版前应先备份原安装来源。
+## 按落点处理文件夹
 
-## 两种处理方式
-
-在 DSH **设置 → Better Attach** 或输入区的附件设置按钮中选择，修改立即保存到当前浏览器站点。
-
-| 模式 | 拖进对话 | 拖进侧栏 |
+| 操作 | 复制副本（默认） | 引用路径 |
 | --- | --- | --- |
-| 复制副本（默认） | 检查目录、预览、暂存；发送时复制 | 检查后复制，并调用真实 DSH 工作区注册接口 |
-| 引用路径 | 校验主机路径，插入引用；发送前再次校验 | 填写主机原目录，直接注册为工作区 |
+| 拖进对话 | 检查目录与预览，暂存成一张卡片，发送时复制 | 填写主机路径，校验后添加引用 |
+| 拖进侧栏 | 确认导入独立副本，注册为工作区 | 填写主机目录，直接注册 |
+| 原文件后续变化 | 已保存副本保持独立 | 模型读取当前原文件 |
 
-**引用路径不等于上传。** 标准浏览器不会公开本机绝对路径，无法从文件夹名字推断 DSH 主机目录。因此路径模式会要求明确填写主机绝对路径，不猜测、不递归扫描主机。路径卡片支持复制路径、文件预览及再次附加；原文件修改后读取的是新内容。目录引用不递归生成文件树，由 DSH 文件工具读取。
+在 **设置 → Better Attach** 或输入区的 **附件设置** 中切换模式。浏览器不会提供本机绝对路径，因此引用模式需要明确填写运行 DSH 的主机路径。
 
-## 交互和显示
+## 看清楚，再发送
 
-- 一个文件夹一张卡片，保留相对目录和可枚举的空目录；目录内可筛选、预览。
-- 独立 PNG/JPEG/WebP/GIF 图片拖放保留 DSH 原生通道；插件选择器选取纯图片时也接入原生图像草稿。文件夹与混合选择使用路径附件，**不会冒充视觉输入**。
-- 文档、表格、压缩包、代码、音频、视频、图片使用不同图标。文本/代码限前 128 KiB，栅格图片限 20 MiB；PDF、Office、音视频、压缩包提供下载，不声称已解析。
-- 两路并发上传，进度、取消、文件级重试；失败保留原草稿，清理副本不会删除原路径。
-- 默认无图，另有官网风格蓝色渐变和 DSH 娘图片主题；仅装饰附件面板，不覆盖对话正文。配色继承 DSH 主题变量，支持减少动态效果、键盘焦点与窄屏。
-- 未发送的浏览器文件选择不能跨刷新恢复。已保存副本及路径引用可从附件记录重新附加。
+- **文件夹单卡片**：保留层级及拖放接口可枚举的空目录；支持筛选文件、展开预览与查看排除项。
+- **预览与图标**：栅格图片、文本和代码可预览；文档、表格、压缩包、音视频有对应图标与下载入口。HTML、SVG 作为文本显示。
+- **原生图片**：单独拖入 PNG/JPEG/WebP/GIF，或通过插件选择器选取纯图片，进入 DSH 原生图像通道。文件夹及混合选择按路径交给模型文件工具读取。
+- **错误恢复**：两路并发上传，支持进度、暂停与文件级重试；已完成文件在重试时复用。发送准备失败保留草稿。
+- **再次附加**：在附件记录中查看已保存副本和原路径引用，重新加入当前会话。
+- **三种外观**：原生无图、蓝色渐变、角色图片。背景用于附件面板，配色继承 DSH；支持键盘焦点、减少动态效果和窄屏。
 
-## 开发、演示与测试
+## 验证与录制
 
 ```sh
 npm ci
 npm run check
-```
-
-生产插件已移除 demo 模式。独立录制脚本见 [recording/README.md](recording/README.md)，不被插件加载，也不打入 npm 包。
-
-复跑**真实 DSH**（不是模拟宿主）：
-
-```sh
 npm ci --prefix fixtures/dsh-latest
 npm run test:live:latest
 npm ci --prefix fixtures/dsh-next
 npm run test:live:next
 ```
 
-测试自动创建独立 DSH_HOME、真实会话与临时文件，结束后删除测试目录。锁文件固定了本次全部依赖；CLI 的 latest 标签与内部组件版本可能不同，详见 `artifacts/dsh-resolved-versions.json`。
+真实浏览器检查和录制说明见 [recording/README.md](recording/README.md)。录制说明牌与鼠标由独立脚本临时呈现，录制目录不被生产插件加载。视频中的回复来自真实 `deepseek-v4-flash-vision-exp`，文件确实上传并由 DSH 工具读取。
 
-## Git 与发布
+## 使用边界
 
-交付 ZIP 含 `.git`，原始提交 `028dc1f`、导入候选包提交和本轮增量提交均保留；还附 Git bundle 作为备用恢复文件。没有推送、连接账户或发布 npm。
+仅支持同机回环访问。文本预览前 128 KiB，图片预览上限 20 MiB；PDF、Office、音视频和压缩包提供下载。默认排除常见依赖、缓存和敏感文件名，规则不是完整的 `.gitignore` 解析器。
 
-```sh
-git status
-git log --oneline
-# 在本地设置你希望推送的远端，再推送当前分支
-# git remote add origin <your-repository-url>
-# git push -u origin better-attach/v0.3.0
-```
+未发送文件选择保存在页面内，刷新后需要重选。已保存附件与“消息发送成功”分开记录。清理只删除当前会话的插件副本；旧版附件、原文件与工作区导入保留。原生消息历史由 DSH 渲染。
 
-`npm pack` 生成可安装包。`npm publish` 的原有发布验收门禁仍保留，需要补齐 `artifacts/native-acceptance.json` 中的真实浏览器和操作系统验收后才能通过。源码开发、安装、测试不受此门禁影响。
+Finder/Explorer 原生拖放仍待人工确认，Windows 和 GitHub Actions 未实跑。候选版保持 `next` 发布标签，具体已验证范围见验收记录。
 
-卸载：`dsh plugin --profile web remove dsh-multimedia-webui-input`，然后重启 DSH。卸载不自动删除副本或原文件。
+卸载：`npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input`，然后重启 DSH。
 
-## 边界
-
-HTTP 扩展仅接受回环同源请求，未实现远程反向代理认证。原生聊天历史卡片仍由 DSH 管理；本插件添加自己的草稿和记录界面。旧版 v0.1 附件不会自动迁移或删除。Windows/macOS 的实机结果、GitHub Actions 执行结果及模型回复未在本环境验证。
-
-源码采用 MIT。可选图片由本轮用户提供，图片来源说明见 [assets/README.md](assets/README.md)。
-
-
-<!-- recording:start -->
-本环境浏览器访问本地 DSH 仍受限制，尚无真实录屏。独立脚本在本地录制成功后会自动在此插入真实 GIF 与 MP4。
-<!-- recording:end -->
+MIT 许可证；可选图片的独立来源说明见 [assets/README.md](assets/README.md)。GitHub About 建议 Topics：`dsh`、`dsh-plugin`、`deepseek-harness`、`attachments`、`drag-and-drop`、`workspace`。README 标签与 GitHub Topics 是分别配置的字段。

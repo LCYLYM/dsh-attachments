@@ -35,11 +35,11 @@ dsh-plugin deepseek-harness dsh attachments drag-and-drop workspace file-upload
 ## 真实发布流程
 
 1. 在原检出目录新建自己的候选分支；执行覆盖预览、备份覆盖、`git diff` 和 `npm run check`。本包提供的 GitHub Actions 尚未在本次交付环境运行。
-2. 在独立 DSH 测试配置完成 `docs/COMPATIBILITY.md` 的检查。填 `artifacts/live-dsh.template.json` 的真实副本 `artifacts/live-dsh.json`，记录精确候选 commit 和去敏证据；运行 `npm run release:check`。
+2. 在独立 DSH 测试配置完成 `docs/COMPATIBILITY.md` 的检查。填 `artifacts/native-acceptance.json`，记录精确候选 commit 和去敏证据；运行 `npm run release:check`。
 3. 使用 `npm pack` 检查实际包内容。确认 npm 包所有权，再以 `next` 标签发布候选版。本包 `prepublishOnly` 有意拦住没有实机证据的发布；`npm pack` 和本地测试不被拦住。不要使用 `--ignore-scripts` 来伪装通过。
 4. 在 GitHub 创建 pre-release，发布准确的限制、测试报告与使用演示；随后提交上述目录。不要在未验证时改成 `latest` 或稳定版。
 
-本地 npm 凭证、真实附件、会话标识和绝对工作路径不应进入 ZIP、npm 包或 issue。交付包只带公开的夹具测试结果，不打包未来填入的 `live-dsh.json` 及其私有证据。
+本地 npm 凭证、真实附件、会话标识和绝对工作路径不应进入 ZIP、npm 包或 issue。交付包只带公开的夹具测试结果，不打包原始私有日志与凭据。
 
 ## 可直接使用的简介
 

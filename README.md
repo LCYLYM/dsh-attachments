@@ -1,85 +1,76 @@
-# Better Attach
+# Better Attach · DSH attachments & folder drops
 
-<img src="assets/logo.svg" width="64" alt="Better Attach logo">
+<img src="assets/logo.svg" width="64" alt="Better Attach">
 
-**Drop a folder into a conversation to attach it. Drop it onto the sidebar to create a workspace.**
+**Drop a folder into a conversation to attach it. Drop it into the sidebar to create a workspace.**
 
-[简体中文](README.zh.md) · [Compatibility](docs/COMPATIBILITY.md) · [Test evidence](docs/ACCEPTANCE.md)
+[简体中文](README.zh.md) · [Compatibility](docs/COMPATIBILITY.md) · [Verification](docs/ACCEPTANCE.md) · [Plugin directories](docs/MARKETPLACES.md)
 
-An attachment plugin for DeepSeek Harness. Package identity remains `dsh-multimedia-webui-input`; this release is **0.3.0-rc.2**, developed on the original repository history.
+`dsh` · `dsh-plugin` · `deepseek-harness` · `attachments` · `drag-and-drop`
 
-**Verified:** 72 automated tests and 9 real-host integration checks on each of DSH `0.1.5-rc.1` and `0.1.5-rc.2`. The managed browser could not open the local host (`ERR_BLOCKED_BY_CLIENT`), so rendered DSH UI, OS-native drops and model requests remain unverified.
+Folder review, file previews and copy/path settings for [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Harness). Continues the identity and Git history of [dsh-attachments](https://github.com/LCYLYM/dsh-attachments), published under the package name `dsh-multimedia-webui-input`.
 
-## Install
+<!-- recording:start -->
+![Real DSH walkthrough](docs/assets/walkthrough.gif)
 
-Requires Node.js 22.19+ or 24+ and DSH.
+[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls.
+<!-- recording:end -->
+
+## Try it locally
+
+Candidate **0.3.0-rc.3** requires Node.js `^22.19.0 || >=24.0.0`. Verified CLI versions: `0.1.5-rc.1` (latest) and `0.1.5-rc.2` (next). Fixture lockfiles pin the component versions used in verification.
+
+Extract the source to a permanent directory:
 
 ```sh
-sh install.sh                     # macOS / Linux
-# PowerShell: ./install.ps1
-# Or:
-dsh plugin --profile web add /absolute/path/to/better-attach
-dsh web --no-open
+npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/better-attach
+npx --yes @deepseek-ai/dsh web
 ```
 
-Restart DSH after installation. The official plugin command links this checkout into the web profile; keep the checkout in place. No DSH core files are overwritten.
+With DSH already installed, use `sh install.sh` or `./install.ps1`. Restart DSH after plugin changes. The delivered TGZ can also be supplied as a local package path. This candidate is distributed locally; check npm for publicly available versions.
 
-## Copy or reference
+For an isolated installation, set `DSH_HOME` to a new directory first. Plugin records and imported workspaces use its `better-attach/` directory. Conversation copies live in the current workspace under `.dsh/tmp/attachments/better-attach-v2/`.
 
-Choose **Settings → Better Attach**, or the attachment settings button beside the composer. Settings persist per browser origin.
+## Choose how files enter DSH
 
-| Mode | Conversation | Sidebar |
+| Destination | Copy files (default) | Reference paths |
 | --- | --- | --- |
-| Copy files (default) | Review and stage; copy on send | Review, copy and register a real workspace |
-| Reference paths | Validate an explicit host path; recheck on send | Register an existing host directory |
+| Conversation | Review, stage one card, copy on send | Validate and reference the host path |
+| Sidebar | Confirm an independent copy and register a workspace | Register an existing host directory |
+| Later source edits | Saved copies stay independent | Reads use the current original |
 
-Browsers do not expose absolute source paths. Reference mode asks for the path on the DSH host; it does not infer it from filenames. References read current original contents. File references support bounded previews, copying the path and reattachment from history. Directory references are browsed through DSH file tools, without recursive enumeration in this plugin.
+Choose a mode in **Settings → Better Attach** or **Attachment settings** beside the composer. Browsers do not expose absolute local paths; reference mode asks for an explicit path on the DSH host.
 
-## Included
+## Review before sending
 
-- One card per folder, directory filtering, empty directories where the browser exposes them.
-- Native DSH image drops preserved; picking only PNG/JPEG/WebP/GIF images also creates native image drafts. Folder and mixed selections remain path attachments, not visual model input.
-- Distinct document, spreadsheet, archive, code, audio, video and image icons.
-- Text/code preview up to 128 KiB; raster image preview up to 20 MiB. PDF, Office, media and archives are download-only.
-- Two concurrent transfers, progress, cancellation, file-level retry and session-scoped history.
-- Native no-image appearance, blue gradient or optional character artwork. Decoration stays inside attachment panels; existing conversation content is unchanged.
-- Reduced motion, visible keyboard focus and narrow-screen layouts.
+- **One folder, one card.** Preserve hierarchy and empty directories exposed by drag APIs; filter files and inspect exclusions.
+- **Previews and icons.** Raster images, text and code previews; distinct document, spreadsheet, archive and media icons. HTML and SVG remain text.
+- **Native image input.** Separate PNG/JPEG/WebP/GIF drops and image-only file selections use DSH's native image drafts. Mixed selections and folders are read through file tools by path.
+- **Recoverable transfers.** Two concurrent uploads, progress, cancellation and file-level retries that reuse completed files. Preparation failures preserve the draft.
+- **Reuse saved attachments.** Reattach saved copies and original-path references from attachment history.
+- **Three appearances.** Native plain, blue gradient and character artwork, with host colors, keyboard focus, reduced motion and narrow layouts.
 
-## Develop and test
+## Verify and record
 
 ```sh
 npm ci
 npm run check
-```
-
-The production plugin has no demo mode. The independent local recorder is documented in [recording/README.md](recording/README.md).
-
-Run the real DSH host tests with the supplied dependency locks:
-
-```sh
 npm ci --prefix fixtures/dsh-latest
 npm run test:live:latest
 npm ci --prefix fixtures/dsh-next
 npm run test:live:next
 ```
 
-Each run creates and removes its own temporary DSH_HOME, sessions and files. `artifacts/dsh-resolved-versions.json` records the exact component versions: the CLI's default tag may resolve newer internal components.
+[Recording instructions](recording/README.md) cover the standalone recorder and real-browser checks. Its movable note and pointer exist only during recording. The production plugin never loads that directory. The walkthrough uses real `deepseek-v4-flash-vision-exp` responses and real DSH file reads.
 
-## Repository and release
+## Boundaries
 
-The delivery archive includes `.git`, the original `028dc1f` commit and local development commits. A separate Git bundle is included for recovery. No remote account was connected, no changes pushed, and no npm package published.
+Loopback access only. Text previews are bounded to 128 KiB; image previews to 20 MiB. PDF, Office, audio, video and archives are downloadable. Common generated directories and sensitive names are excluded by default; these rules are not a complete `.gitignore` implementation.
 
-Use `git log --oneline` and `git status`, add your desired remote locally, then push branch `better-attach/v0.3.0`. `npm pack` creates an installable archive. The existing public-release gate requires separately recorded native acceptance in `artifacts/native-acceptance.json`; it does not block local installation or development.
+Unsent browser selections need reselecting after reload. Saved files and successful message sends are tracked separately. Explicit cleanup affects this plugin's current-session copies, preserving originals, imported workspaces and legacy files. DSH owns native message-history rendering.
 
-Uninstall with `dsh plugin --profile web remove dsh-multimedia-webui-input`, then restart DSH. Existing files are retained.
+Finder/Explorer drag-and-drop still needs manual confirmation. Windows and GitHub Actions have not been executed here. The candidate retains the `next` release tag; see the verification record for exact scope.
 
-## Limits
+Uninstall with `npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input`, then restart DSH.
 
-Loopback same-origin HTTP only; remote proxy authentication is not implemented. Unsent browser file selections are lost on refresh; saved copies and path references can be reattached from history. Native message-history cards remain owned by DSH. Legacy v0.1 attachment data is not migrated or deleted. Windows/macOS, GitHub Actions and actual model responses have not been verified in this environment.
-
-MIT for source code. Optional artwork is user-supplied; see [asset provenance](assets/README.md).
-
-
-<!-- recording:start -->
-No recording is claimed: local-browser access is blocked in this environment. Run the standalone recorder locally; successful capture inserts the real GIF and MP4 here.
-<!-- recording:end -->
+MIT license. See [artwork provenance](assets/README.md) for optional artwork. Suggested GitHub Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `attachments`, `drag-and-drop`, `workspace`. Configure Topics separately in the repository's About panel.
