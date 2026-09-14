@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0-rc.1",
+  "version": "0.3.0-rc.2",
   "node": "v24.19.0",
   "platform": "linux",
   "checks": [
@@ -81,5 +81,5 @@
   ],
   "runtimeProbe": "not-requested",
   "nativeDSHCertified": false,
-  "clientSHA256": "1268d6a4b3dde30f153706f44938a7a7b74f79314507291ff93dfd59232d6644"
+  "clientSHA256": "f2791341849987e38ca83554281ae0f48bfaa36af4190b816d26f1f7bfb1ecb2"
 }

@@ -1,0 +1,10 @@
+{
+  "recorded": false,
+  "reason": "Managed browser returned ERR_BLOCKED_BY_CLIENT on retry of http://127.0.0.1:3080",
+  "alternativeNetworkRouteAttempted": false,
+  "recorderEndToEndTested": false,
+  "helperUnitTestsPassed": 4,
+  "directVisionAPIPassed": true,
+  "gifExists": false,
+  "mp4Exists": false
+}

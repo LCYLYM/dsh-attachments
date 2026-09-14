@@ -1,0 +1,11 @@
+{
+  "name": "better-attach-local-recorder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "record": "node record.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.57.0"
+  }
+}

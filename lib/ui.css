@@ -10,3 +10,5 @@
 .ba-toolbar>.ba-button{min-height:30px;padding:4px 7px;font-size:12px}.ba-dialog .ba-button,.ba-settings .ba-button{min-height:36px}
 
 :root{--ba-character:url('/assets/character.jpg')}
+
+.ba-logo{display:inline-block;width:30px;height:30px;vertical-align:middle;margin-right:10px;background:var(--ba-logo) center/contain no-repeat}

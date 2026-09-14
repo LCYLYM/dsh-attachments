@@ -1,10 +1,12 @@
 # Better Attach
 
+<img src="assets/logo.svg" width="64" alt="Better Attach logo">
+
 **Drop a folder into a conversation to attach it. Drop it onto the sidebar to create a workspace.**
 
 [简体中文](README.zh.md) · [Compatibility](docs/COMPATIBILITY.md) · [Test evidence](docs/ACCEPTANCE.md)
 
-An attachment plugin for DeepSeek Harness. Package identity remains `dsh-multimedia-webui-input`; this release is **0.3.0-rc.1**, developed on the original repository history.
+An attachment plugin for DeepSeek Harness. Package identity remains `dsh-multimedia-webui-input`; this release is **0.3.0-rc.2**, developed on the original repository history.
 
 **Verified:** 72 automated tests and 9 real-host integration checks on each of DSH `0.1.5-rc.1` and `0.1.5-rc.2`. The managed browser could not open the local host (`ERR_BLOCKED_BY_CLIENT`), so rendered DSH UI, OS-native drops and model requests remain unverified.
 
@@ -48,10 +50,9 @@ Browsers do not expose absolute source paths. Reference mode asks for the path o
 ```sh
 npm ci
 npm run check
-npm run demo
 ```
 
-Open `http://127.0.0.1:4173`. The demo uses real local file storage and a simulated workspace registry; it makes no model calls. The demo itself has no third-party runtime dependencies.
+The production plugin has no demo mode. The independent local recorder is documented in [recording/README.md](recording/README.md).
 
 Run the real DSH host tests with the supplied dependency locks:
 
@@ -77,3 +78,8 @@ Uninstall with `dsh plugin --profile web remove dsh-multimedia-webui-input`, the
 Loopback same-origin HTTP only; remote proxy authentication is not implemented. Unsent browser file selections are lost on refresh; saved copies and path references can be reattached from history. Native message-history cards remain owned by DSH. Legacy v0.1 attachment data is not migrated or deleted. Windows/macOS, GitHub Actions and actual model responses have not been verified in this environment.
 
 MIT for source code. Optional artwork is user-supplied; see [asset provenance](assets/README.md).
+
+
+<!-- recording:start -->
+No recording is claimed: local-browser access is blocked in this environment. Run the standalone recorder locally; successful capture inserts the real GIF and MP4 here.
+<!-- recording:end -->

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0-rc.2
+
+- Removed the integrated demo and demo launchers.
+- Added a vector logo to the README and plugin settings.
+- Added an independent local recording script, movable callout, real file fixtures and output verification. It is excluded from the npm package.
+- Successfully tested the generated image against the supplied vision API.
+- Browser access remains blocked; no GIF/MP4 capture is claimed.
+
+
 ## 0.3.0-rc.1
 
 - Installed and tested real DSH CLI 0.1.5-rc.1 and 0.1.5-rc.2.

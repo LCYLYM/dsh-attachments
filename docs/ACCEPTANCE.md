@@ -2,6 +2,9 @@
 
 ## 本轮结果
 
+0.3.0-rc.2 新增独立录制脚本的 4 项单元测试通过（artifacts/recorder-unit-tests.tap）。生成的图片已通过真实模型 API 识别（artifacts/vision-api-check.json）；这不代表通过 DSH 页面录制。浏览器再次尝试仍被 ERR_BLOCKED_BY_CLIENT 阻止，当前没有实际 GIF/MP4。
+
+
 | 检查 | 实际结果 | 证据 |
 | --- | --- | --- |
 | Node 核心、HTTP、存储、引用、编辑器契约、DOM 模拟 | 72 passed, 0 failed | artifacts/current-node-tests.tap |

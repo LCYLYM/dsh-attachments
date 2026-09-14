@@ -7,3 +7,5 @@ __pycache__/
 artifacts/live-evidence/
 work/
 artifacts/live-evidence/
+recording/output/
+recording/.env

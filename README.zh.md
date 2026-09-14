@@ -1,10 +1,12 @@
 # Better Attach
 
+<img src="assets/logo.svg" width="64" alt="Better Attach logo">
+
 **文件夹拖进对话，是附件；拖进侧栏，是工作区。**
 
 [English](README.md) · [安装与兼容](docs/COMPATIBILITY.md) · [测试证据](docs/ACCEPTANCE.md) · [设计决策](docs/DECISIONS.md)
 
-DeepSeek Harness 的附件插件。保留包名 `dsh-multimedia-webui-input`，在原仓库历史上升级为 **0.3.0-rc.1**。
+DeepSeek Harness 的附件插件。保留包名 `dsh-multimedia-webui-input`，在原仓库历史上升级为 **0.3.0-rc.2**。
 
 本版已实际安装 DSH，并在默认发行版 `0.1.5-rc.1` 与 next 版 `0.1.5-rc.2` 上各通过 9 项真实宿主联调；72 项自动测试通过。真实浏览器页面、模型请求及 Finder/Explorer 人工拖放尚未验收，因此保留候选版标识。
 
@@ -52,10 +54,9 @@ dsh plugin --profile web add /absolute/path/to/better-attach
 ```sh
 npm ci
 npm run check
-npm run demo
 ```
 
-演示地址为 `http://127.0.0.1:4173`，写入临时测试目录，不调用模型。`START-DEMO.cmd` / `START-DEMO.sh` 可直接启动；演示页本身不需要安装第三方依赖。
+生产插件已移除 demo 模式。独立录制脚本见 [recording/README.md](recording/README.md)，不被插件加载，也不打入 npm 包。
 
 复跑**真实 DSH**（不是模拟宿主）：
 
@@ -89,3 +90,8 @@ git log --oneline
 HTTP 扩展仅接受回环同源请求，未实现远程反向代理认证。原生聊天历史卡片仍由 DSH 管理；本插件添加自己的草稿和记录界面。旧版 v0.1 附件不会自动迁移或删除。Windows/macOS 的实机结果、GitHub Actions 执行结果及模型回复未在本环境验证。
 
 源码采用 MIT。可选图片由本轮用户提供，图片来源说明见 [assets/README.md](assets/README.md)。
+
+
+<!-- recording:start -->
+本环境浏览器访问本地 DSH 仍受限制，尚无真实录屏。独立脚本在本地录制成功后会自动在此插入真实 GIF 与 MP4。
+<!-- recording:end -->

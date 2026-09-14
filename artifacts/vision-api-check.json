@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "answer": "图中三件主要物品：**蓝色马克杯**（内有咖啡）、**红陶盆绿色多肉植物**、**黄色笔记本**。",
+  "usage": {
+    "prompt_tokens": 996,
+    "completion_tokens": 194,
+    "total_tokens": 1190,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 163
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 996
+  },
+  "scope": "Direct API vision check, not DSH UI or recording"
+}
