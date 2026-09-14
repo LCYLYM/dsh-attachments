@@ -22,7 +22,7 @@ Generated folders are skipped before traversal. Common sensitive names, includin
 
 Draft File objects are browser memory and are lost on refresh. Removed selections are retained for page-lifetime undo; committed records release browser File bytes and thumbnail object URLs. Disk staging is retained for retry and may remain for up to the next hourly sweep after 24 hours. Completed imports are retained until explicit cleanup; workspaces are never automatically removed.
 
-Session cleanup requires a fixed confirmation string and only deletes this v2 store's committed copies for the current session/cwd. It leaves originals, unrelated sessions, imported workspaces and old v1 files alone. Existing references become invalid after cleanup. Uninstall removes plugin registration/UI contributions, not user data.
+Session cleanup requires a fixed confirmation string and only deletes this v2 store's committed copies for the current session/cwd. It leaves originals, unrelated sessions, registered workspaces and old v1 files alone. Existing references become invalid after cleanup. Uninstall removes plugin registration/UI contributions, not user data.
 
 A local disk-full/permission error is surfaced rather than reported as success. This candidate does not provide a resumable byte-range upload protocol: retries reuse completed whole files, and a partially sent file restarts.
 

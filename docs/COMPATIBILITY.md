@@ -17,7 +17,7 @@ npx --yes @deepseek-ai/dsh web
 
 源码目录需长期保留。也可以将安装目标替换为交付 TGZ 的绝对路径。已有 DSH 命令时可使用随包安装脚本。
 
-隔离试用时先设置 `DSH_HOME` 到新目录。插件的记录和工作区导入遵守这个目录。卸载并重启后界面入口移除，原文件及已保存附件保留：
+隔离试用时先设置 `DSH_HOME` 到新目录。插件的附件记录遵守这个目录；工作区直接使用注册的原目录。卸载并重启后界面入口移除，原文件及已保存附件保留：
 
 ```sh
 npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input
@@ -27,7 +27,7 @@ npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-inpu
 
 ## 已验证与待确认
 
-已验证：真实 DSH 网页、原生图片发送与模型识别、普通文件和目录的真实读取、工作区复制注册、引用路径、设置持久化、预览、窄屏和上传失败重试。详见 [验收记录](ACCEPTANCE.md)。
+已验证：真实 DSH 网页、原生图片发送与模型识别、普通文件和目录的真实读取、原目录工作区注册、引用路径、设置持久化、预览、窄屏和上传失败重试。详见 [验收记录](ACCEPTANCE.md)。
 
 待确认：Finder/Explorer 跨窗口原生拖放、Windows 实机和 GitHub Actions。原生拖放尝试未取得可靠的成功读回，因此不以自动化事件替代该项。
 

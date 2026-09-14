@@ -18,7 +18,7 @@ Folder review, file previews and copy/path settings for [DeepSeek Harness](https
 
 ## Try it locally
 
-Candidate **0.3.0-rc.4** requires Node.js `^22.19.0 || >=24.0.0`. Verified CLI versions: `0.1.5-rc.1` (latest) and `0.1.5-rc.2` (next). Fixture lockfiles pin the component versions used in verification.
+Candidate **0.3.0-rc.5** requires Node.js `^22.19.0 || >=24.0.0`. Verified CLI versions: `0.1.5-rc.1` (latest) and `0.1.5-rc.2` (next). Fixture lockfiles pin the component versions used in verification.
 
 Extract the source to a permanent directory:
 
@@ -29,17 +29,19 @@ npx --yes @deepseek-ai/dsh web
 
 With DSH already installed, use `sh install.sh` or `./install.ps1`. Restart DSH after plugin changes. The delivered TGZ can also be supplied as a local package path. This candidate is distributed locally; check npm for publicly available versions.
 
-For an isolated installation, set `DSH_HOME` to a new directory first. Plugin records and imported workspaces use its `better-attach/` directory. Conversation copies live in the current workspace under `.dsh/tmp/attachments/better-attach-v2/`.
+For an isolated installation, set `DSH_HOME` to a new directory first. Plugin attachment records use its `better-attach/` directory. Conversation copies live in the current workspace under `.dsh/tmp/attachments/better-attach-v2/`.
 
 ## Choose how files enter DSH
 
 | Destination | Copy files (default) | Reference paths |
 | --- | --- | --- |
 | Conversation | Review, stage one card, copy on send | Validate and reference the host path |
-| Sidebar | Confirm an independent copy and register a workspace | Register an existing host directory |
+| Sidebar | Register the original host directory | Register the original host directory |
 | Later source edits | Saved copies stay independent | Reads use the current original |
 
-Choose a mode in **Settings → Better Attach** or **Attachment settings** beside the composer. Browsers do not expose absolute local paths; reference mode asks for an explicit path on the DSH host.
+Sidebar registration is independent of conversation attachment mode. An absolute original path in the drop is registered directly; otherwise select or enter the original directory on the DSH host.
+
+Choose a mode in **Settings → Better Attach** or **Attachment settings** beside the composer. Ordinary browsers generally omit original absolute paths; conversation reference mode asks for an explicit path on the DSH host.
 
 ## Review before sending
 
@@ -67,7 +69,7 @@ npm run test:live:next
 
 Loopback access only. Text previews are bounded to 128 KiB; image previews to 20 MiB. PDF, Office, audio, video and archives are downloadable. Common generated directories and sensitive names are excluded by default; these rules are not a complete `.gitignore` implementation.
 
-Unsent browser selections need reselecting after reload. Saved files and successful message sends are tracked separately. Explicit cleanup affects this plugin's current-session copies, preserving originals, imported workspaces and legacy files. DSH owns native message-history rendering.
+Unsent browser selections need reselecting after reload. Saved files and successful message sends are tracked separately. Explicit cleanup affects this plugin's current-session copies, preserving originals, registered workspaces and legacy files. DSH owns native message-history rendering.
 
 Finder/Explorer drag-and-drop still needs manual confirmation. Windows and GitHub Actions have not been executed here. The candidate retains the `next` release tag; see the verification record for exact scope.
 

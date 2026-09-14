@@ -13,7 +13,7 @@
     "ordinaryFileSend": false,
     "nativeImagePassThrough": false,
     "folderConversation": false,
-    "folderSidebarCopy": false,
+    "folderSidebarOriginal": false,
     "existingHostDirectory": false,
     "foreignReferencePreservation": false,
     "failureRetry": false,

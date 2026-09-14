@@ -1,0 +1,26 @@
+{
+  "realDSH": true,
+  "syntheticOSDrop": true,
+  "originalPathMatches": true,
+  "fileBatchRequests": 0,
+  "originalTreeUnchanged": true,
+  "checks": [
+    {
+      "name": "copy conversation mode registers original workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "path conversation mode registers original workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit absolute drop metadata registers original directly",
+      "status": "PASS"
+    },
+    {
+      "name": "workspace registration uploads no file batches and preserves original tree",
+      "status": "PASS"
+    }
+  ],
+  "clientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74"
+}

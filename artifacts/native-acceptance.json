@@ -1,8 +1,8 @@
 {
   "realDSH": true,
   "fixture": false,
-  "repositoryCommit": "935e4e1340e502844c7e80f90296185042ea31af",
-  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8",
+  "repositoryCommit": "bde222f7088043b4771a8c4f7141d6fa73e2c983",
+  "clientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
   "dshVersion": "0.1.5-rc.1",
   "nodeVersion": "v24.13.1",
   "os": "macOS",
@@ -14,7 +14,7 @@
     "ordinaryFileSend": true,
     "nativeImagePassThrough": true,
     "folderConversation": true,
-    "folderSidebarCopy": true,
+    "folderSidebarOriginal": true,
     "existingHostDirectory": true,
     "failureRetry": true,
     "uninstallNoCorePatch": true,
@@ -27,7 +27,8 @@
     "artifacts/install-lifecycle.json",
     "docs/assets/walkthrough.mp4",
     "artifacts/foreign-reference.json",
-    "artifacts/drag-motion.json"
+    "artifacts/drag-motion.json",
+    "artifacts/workspace-registration.json"
   ],
   "pendingNotes": [
     "Native OS cross-window drag was attempted without reliable success readback."

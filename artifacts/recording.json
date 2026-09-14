@@ -17,17 +17,19 @@
     },
     {
       "name": "workspace",
-      "successDialog": true
+      "successDialog": true,
+      "originalDirectoryVerified": true,
+      "fileBatchRequests": 0
     },
     {
       "name": "path",
       "added": true
     }
   ],
-  "startedAt": "2026-09-14T12:24:03.324Z",
-  "finishedAt": "2026-09-14T12:24:57.202Z",
+  "startedAt": "2026-09-14T13:33:39.680Z",
+  "finishedAt": "2026-09-14T13:34:35.326Z",
   "converted": true,
-  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8",
+  "clientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
   "dshVersion": "0.1.5-rc.1",
   "model": "deepseek-v4-flash-vision-exp",
   "captureSurface": "DSH webpage viewport only"

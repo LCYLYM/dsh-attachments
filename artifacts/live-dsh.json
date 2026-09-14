@@ -30,7 +30,7 @@
       "status": "passed"
     },
     {
-      "name": "folder copy registers as real DSH workspace",
+      "name": "workspace upload requests are rejected without creating a workspace copy",
       "status": "passed"
     },
     {
@@ -38,12 +38,12 @@
       "status": "passed"
     }
   ],
-  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8",
+  "clientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
   "nodeVersion": "v24.13.1",
   "os": "darwin",
   "realDSH": true,
   "dshVersion": "0.1.5-rc.2",
-  "testedAt": "2026-09-14T12:25:49.793Z",
+  "testedAt": "2026-09-14T13:37:27.931Z",
   "browser": "Not covered by this host-only test",
-  "logs": "dsh web: http://127.0.0.1:61713/?token=REDACTED\n"
+  "logs": "dsh web: http://127.0.0.1:64662/?token=REDACTED\n"
 }

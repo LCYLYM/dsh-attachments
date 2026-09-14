@@ -1,117 +1,87 @@
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
-> dsh-multimedia-webui-input@0.3.0-rc.2 check
-> npm run build && npm test && npm run doctor
-
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
-
-> dsh-multimedia-webui-input@0.3.0-rc.2 build
-> node scripts/build.mjs
-
-Built lib/client.js (199019 bytes), 6 owned modules; React is provided by DSH.
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
-
-> dsh-multimedia-webui-input@0.3.0-rc.2 test
+> dsh-multimedia-webui-input@0.3.0-rc.5 test
 > node scripts/test.mjs
 
-✔ safe reference add/remove preserves foreign chips (modern clipboard offsets) (1.449847ms)
-✔ safe reference add/remove preserves foreign chips (legacy one-character) (0.926317ms)
-✔ locked input and unavailable edit event fail without rewriting draft (0.793407ms)
-✔ DSH host route lifecycle and late optional workspace capability (15.150323ms)
-✔ client refuses incompatible contracts before touching DOM (0.546234ms)
-✔ built browser artifact registers the original package identity and has no external bundle dependencies (17.829221ms)
-✔ cold persisted sessions resolve through official inspection without activation (12.522483ms)
-✔ loopback, Host, origin and custom header guards reject remote/CSRF requests (1.388285ms)
-✔ real HTTP transfer, download headers, bounded preview, cleanup and failed requests (123.714617ms)
-✔ drain more than 100 directory entries and preserve empty dirs (13.143101ms)
-✔ never enter default-excluded dependency folder (1.391419ms)
-✔ aborted scan produces no partial accepted selection (0.744943ms)
-✔ picker fallback preserves relative path but admits empty-dir limitation (0.301495ms)
-✔ capture DataTransfer entries synchronously, ignore internal text drags (0.352412ms)
-✔ fallback supports browser FileList without directory API (0.232921ms)
-✔ overlay dry-run, apply, sibling backup and restore preserve .git and unrelated user files (340.26154ms)
-✔ reject unsafe portable path "../x" (1.535577ms)
-✔ reject unsafe portable path "/etc/passwd" (0.206671ms)
-✔ reject unsafe portable path "a/../b" (0.21206ms)
-✔ reject unsafe portable path "a//b" (0.229075ms)
-✔ reject unsafe portable path "a/./b" (0.201864ms)
-✔ reject unsafe portable path "C:\\x" (0.147132ms)
-✔ reject unsafe portable path "C:/x" (0.162385ms)
-✔ reject unsafe portable path "foo\\bar" (0.137127ms)
-✔ reject unsafe portable path "a\u0000b" (0.174413ms)
-✔ reject unsafe portable path "a\nb" (0.306122ms)
-✔ reject unsafe portable path "CON" (0.560636ms)
-✔ reject unsafe portable path "aux.txt" (0.182295ms)
-✔ reject unsafe portable path "a/NUL.json" (0.157788ms)
-✔ reject unsafe portable path "a." (0.073131ms)
-✔ reject unsafe portable path "a " (0.124538ms)
-✔ reject unsafe portable path "a:b" (0.128474ms)
-✔ reject unsafe portable path "a‮b" (0.140492ms)
-✔ preserve Unicode, spaces and parentheses without silently renaming (0.264639ms)
-✔ detect case and Unicode collisions (1.059528ms)
-✔ file cannot be directory ancestor (0.233222ms)
-✔ empty directory import valid, truly empty selection invalid (1.114732ms)
-✔ single, total, count, depth and unsafe-size limits are enforced (0.367475ms)
-✔ generated and sensitive defaults are explicit, not a .gitignore claim (0.439042ms)
-✔ SVG and HTML preview as text, PDFs download without executing (0.355205ms)
-✔ model manifest quotes untrusted filenames and bounds expansion (0.435247ms)
-✔ settings retain copy/path and theme selections; malformed saved values reset safely (2.481474ms)
-✔ settings storage failure is reported instead of claiming persistence (0.738034ms)
-✔ icons distinguish document, spreadsheet, archive, code and media files (0.692385ms)
-✔ path reference persists without copying and reads current original bytes (30.50203ms)
-✔ references enforce session isolation, absolute paths and regular files (7.612575ms)
-✔ replaced original path refuses preview while directory reference stays read-only (23.157099ms)
-✔ saved path history is session scoped and survives a new store (8.255145ms)
-✔ real streamed bytes, SHA-256, nested structure and empty directories (36.658909ms)
-✔ incomplete commit does not publish a final directory (6.811096ms)
-✔ create and commit idempotency plus no postcommit mutation (12.470214ms)
-✔ partial-size failure and retry leave no partial accepted file (10.370216ms)
-✔ received-file retry compares content, not name or size alone (14.085792ms)
-✔ session ownership and changed cwd reject commit (5.731016ms)
-✔ workspace has dedicated scope independent of an active conversation (13.408902ms)
-✔ workspace scope cannot be used to smuggle a conversation attachment (2.198918ms)
-✔ workspace requires one folder and capability, never fake success (2.373491ms)
-✔ registration failure after copy can retry without duplicating files (15.783173ms)
-✔ restart reloads metadata, histories and completed receipt (29.040625ms)
-✔ two files upload concurrently and commit refuses an active writer (19.643572ms)
-✔ cancel aborts an actual stream and deletes only its pending directory (11.494673ms)
-✔ late upload admission cannot race a commit sealing a batch (9.392932ms)
-✔ symlink storage ancestor and committed file substitution rejected (13.728203ms)
-✔ cleanup is explicit and isolated from original files, other sessions and workspace copies (27.951587ms)
-✔ pending capacity and stale TTL cleanup never auto-delete committed files (11.347035ms)
-✔ explicit host directory registration does not copy it (1.865114ms)
-✔ mode and appearance controls persist, rerender and restore no-image mode (23.133277ms)
-✔ path dialog validates asynchronously and displays errors without dismissing input (8.136867ms)
-✔ toolbar opens settings with accessible controls and releases subscription (4.395071ms)
-✔ path cards show original location and use a distinct file icon (1.535997ms)
-✔ path-mode folder drop requests explicit path without enumerating or copying (3.29398ms)
-✔ client mounts declared slots, coexists with native image drafts and disposes effects (3.090162ms)
-ℹ tests 72
+✔ safe reference add/remove preserves foreign chips (modern clipboard offsets) (3.658375ms)
+✔ safe reference add/remove preserves foreign chips (legacy one-character) (0.44775ms)
+✔ locked input and unavailable edit event fail without rewriting draft (1.424083ms)
+✔ DSH host route lifecycle and late optional workspace capability (25.165625ms)
+✔ client refuses incompatible contracts before touching DOM (0.454959ms)
+✔ built browser artifact registers the original package identity and has no external bundle dependencies (20.3325ms)
+✔ cold persisted sessions resolve through official inspection without activation (10.9855ms)
+✔ loopback, Host, origin and custom header guards reject remote/CSRF requests (3.525ms)
+✔ real HTTP transfer, download headers, bounded preview, cleanup and failed requests (315.5185ms)
+✔ drain more than 100 directory entries and preserve empty dirs (20.803167ms)
+✔ never enter default-excluded dependency folder (1.440625ms)
+✔ aborted scan produces no partial accepted selection (0.48375ms)
+✔ picker fallback preserves relative path but admits empty-dir limitation (0.506875ms)
+✔ capture DataTransfer entries synchronously, ignore internal text drags (0.332625ms)
+✔ fallback supports browser FileList without directory API (0.228458ms)
+✔ workspace metadata uses only an explicit absolute host path (0.783083ms)
+✔ overlay dry-run, apply, sibling backup and restore preserve .git and unrelated user files (2047.606958ms)
+✔ reject unsafe portable path "../x" (2.428542ms)
+✔ reject unsafe portable path "/etc/passwd" (0.910708ms)
+✔ reject unsafe portable path "a/../b" (0.3435ms)
+✔ reject unsafe portable path "a//b" (0.421083ms)
+✔ reject unsafe portable path "a/./b" (0.174917ms)
+✔ reject unsafe portable path "C:\\x" (0.141458ms)
+✔ reject unsafe portable path "C:/x" (0.092541ms)
+✔ reject unsafe portable path "foo\\bar" (0.057166ms)
+✔ reject unsafe portable path "a\u0000b" (0.060084ms)
+✔ reject unsafe portable path "a\nb" (0.117917ms)
+✔ reject unsafe portable path "CON" (0.066ms)
+✔ reject unsafe portable path "aux.txt" (0.051292ms)
+✔ reject unsafe portable path "a/NUL.json" (0.065625ms)
+✔ reject unsafe portable path "a." (0.036583ms)
+✔ reject unsafe portable path "a " (0.066334ms)
+✔ reject unsafe portable path "a:b" (0.032584ms)
+✔ reject unsafe portable path "a‮b" (3.097583ms)
+✔ preserve Unicode, spaces and parentheses without silently renaming (0.791958ms)
+✔ detect case and Unicode collisions (1.987666ms)
+✔ file cannot be directory ancestor (0.346875ms)
+✔ empty directory import valid, truly empty selection invalid (0.102333ms)
+✔ single, total, count, depth and unsafe-size limits are enforced (0.305375ms)
+✔ generated and sensitive defaults are explicit, not a .gitignore claim (0.3575ms)
+✔ SVG and HTML preview as text, PDFs download without executing (0.536708ms)
+✔ model manifest quotes untrusted filenames and bounds expansion (0.830709ms)
+✔ settings retain copy/path and theme selections; malformed saved values reset safely (3.970292ms)
+✔ settings storage failure is reported instead of claiming persistence (0.656875ms)
+✔ icons distinguish document, spreadsheet, archive, code and media files (1.223667ms)
+✔ path reference persists without copying and reads current original bytes (112.211708ms)
+✔ references enforce session isolation, absolute paths and regular files (118.147917ms)
+✔ replaced original path refuses preview while directory reference stays read-only (30.812958ms)
+✔ saved path history is session scoped and survives a new store (15.708041ms)
+✔ real streamed bytes, SHA-256, nested structure and empty directories (102.263625ms)
+✔ incomplete commit does not publish a final directory (9.772167ms)
+✔ create and commit idempotency plus no postcommit mutation (48.612791ms)
+✔ partial-size failure and retry leave no partial accepted file (31.290709ms)
+✔ received-file retry compares content, not name or size alone (25.044459ms)
+✔ session ownership and changed cwd reject commit (5.983833ms)
+✔ workspace registration uses the original directory independently of a conversation (2.068875ms)
+✔ workspace scope cannot be used to smuggle a conversation attachment (1.022375ms)
+✔ workspace registration requires an existing directory and host capability (1.488584ms)
+✔ workspace registration retry preserves the original and creates no file batches (2.60875ms)
+✔ restart reloads metadata, histories and completed receipt (34.946416ms)
+✔ two files upload concurrently and commit refuses an active writer (46.070458ms)
+✔ cancel aborts an actual stream and deletes only its pending directory (13.083084ms)
+✔ late upload admission cannot race a commit sealing a batch (9.695666ms)
+✔ symlink storage ancestor and committed file substitution rejected (52.941625ms)
+✔ cleanup is explicit and isolated from original files, other sessions and registered workspaces (90.772417ms)
+✔ pending capacity and stale TTL cleanup never auto-delete committed files (35.545666ms)
+✔ explicit host directory registration does not copy it (2.320375ms)
+✔ mode and appearance controls persist, rerender and restore no-image mode (17.260667ms)
+✔ path dialog validates asynchronously and displays errors without dismissing input (9.473292ms)
+✔ toolbar opens settings with accessible controls and releases subscription (3.84375ms)
+✔ path cards show original location and use a distinct file icon (1.207458ms)
+✔ path-mode folder drop requests explicit path without enumerating or copying (2.439ms)
+✔ client mounts declared slots, coexists with native image drafts and disposes effects (2.134208ms)
+✔ drop hint survives sparse events, preserves content, and clears on leave or cancellation (476.233541ms)
+✔ sidebar drop in both attachment modes opens original-directory registration without enumeration (2.958708ms)
+ℹ tests 75
 ℹ suites 0
-ℹ pass 72
+ℹ pass 75
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 585.454351
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
-
-> dsh-multimedia-webui-input@0.3.0-rc.2 doctor
-> node scripts/doctor.mjs
-
-PASS packaged:lib/index.js
-PASS packaged:lib/client.js
-PASS packaged:src/dsh-client.js
-PASS packaged:lib/ui.css
-PASS packaged:cordis.patch.yml
-PASS packaged:LICENSE
-PASS packaged:README.md
-PASS packaged:README.zh.md
-PASS packaged:docs/COMPATIBILITY.md
-PASS identity-preserved
-PASS explicit-prerelease
-PASS zero-third-party-runtime-dependencies
-PASS host-apply
-PASS client-loader
-PASS no-whole-draft-fallback
-Native DSH certification: NOT asserted. See docs/COMPATIBILITY.md.
+ℹ duration_ms 2167.600125
