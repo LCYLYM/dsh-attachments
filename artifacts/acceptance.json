@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "product": "Better Attach",
+  "package": "dsh-multimedia-webui-input",
+  "version": "0.2.0-rc.1",
+  "date": "2026-09-14",
+  "deliveryStatus": "source-and-testable-candidate-delivered",
+  "productionReady": false,
+  "provenance": {
+    "upstream": "https://github.com/LCYLYM/dsh-attachments",
+    "fullGitClone": false,
+    "upstreamCommit": null,
+    "originalHostRetrieved": false,
+    "method": "public client + metadata inspection; newly authored contract-based candidate"
+  },
+  "environment": {
+    "os": "Linux",
+    "node": "22.16.0",
+    "playwright": "1.57.0"
+  },
+  "node": {
+    "passed": 58,
+    "failed": 0,
+    "skipped": 0,
+    "report": "artifacts/node-tests.tap",
+    "realFilesystem": true,
+    "realHTTP": true,
+    "dshAdapters": "contract test doubles"
+  },
+  "browser": {
+    "passed": 20,
+    "failed": 0,
+    "pageErrors": 0,
+    "report": "artifacts/browser-tests.json",
+    "mode": "in-memory-local-HTTP-bridge",
+    "realFilesystem": true,
+    "nativeXHR": false,
+    "workspaceRegistry": "test double",
+    "nativeOSFolderDrag": false
+  },
+  "npmArchive": {
+    "extractionBuildTestsDoctorPassed": true,
+    "nodeTests": 58,
+    "note": "Same implementation is re-packed with documentation and this report; final archive hash is in external SHA256SUMS."
+  },
+  "notExecuted": [
+    "native DSH install/boot/send/uninstall",
+    "real model",
+    "native browser transport end-to-end",
+    "Finder/Explorer folder drag",
+    "Windows/macOS runtime",
+    "GitHub Actions",
+    "maximum-capacity performance",
+    "GitHub push",
+    "npm publish",
+    "marketplace submission"
+  ],
+  "releaseGate": {
+    "executed": true,
+    "exitCode": 1,
+    "expected": true,
+    "reason": "Real DSH acceptance evidence not provided"
+  },
+  "securityScope": "single-user loopback only; not a remote authenticated deployment",
+  "walkthrough": "actual fixture screenshots assembled into a step-by-step GIF; not a continuous native-DSH recording",
+  "codeSha256": {
+    "lib/client-api.js": "ea5d8e522551609d177081c2c9df97d83e3c95e07239f7057ce786e9c586999e",
+    "lib/client.js": "a266ad711c98da252c6b72c67eae13ae7eff21a73bed189b756a553c4f2e608f",
+    "lib/http.js": "47c20dcb143dabe0399019ec461b7a17e839d9ea8e560d4de0fadaaaa6255ca3",
+    "lib/index.js": "5127e2300b55e5497224d0f12dd82f2f082c6084952477ff97f5626694117f57",
+    "lib/intake.js": "ddef559e47ea023a59f7fbdcd7b7058311c598c40089b0b0f1ea29c892d6e17d",
+    "lib/policy.js": "025bd6b8c75b171d27d7ac73b59b7ad92c29a0aebc3f2f9f1740de8726fcb95a",
+    "lib/store.js": "04d6cf7d87c6d4721a6e367878c559bec9a4ea0722c1393957e7e8ba0d2d91c8",
+    "lib/ui.css": "28ad4afe57daa933906616d0a6a793aea24c22097772b7966e63a628ac11a198",
+    "lib/ui.js": "8d0f37cfa1ad1d12bea4990cc8d83c5c17a9d19069fb88fa4605d1b53945a128",
+    "src/dsh-client.js": "e9b34dfae80f13477f95f0acf7d9e05198efb98076fb34128603911c615f9537"
+  }
+}

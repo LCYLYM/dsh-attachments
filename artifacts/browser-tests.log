@@ -1,0 +1,20 @@
+PASS UI boots with real shared modules
+PASS Preflight excludes .env and node_modules, preserves empty directory
+PASS Staged conversation folder has not been copied
+PASS File picker intake and escaped code preview; Escape closes only the top dialog
+PASS Raster preview renders an actual Blob without executing document content
+PASS Draft attachments remain scoped during conversation switch
+PASS Remove and undo restore the pending selection
+PASS Pure image drop is left to the native-event witness
+PASS Text and internal drags are not hijacked
+PASS Sidebar directory drop copies a tree then registers one workspace
+PASS Loose file dropped on sidebar is rejected before copying
+PASS Explicit existing-host directory registration creates no imported copy
+PASS Escape cancels the current drop intent without swallowing future drops
+PASS Async directory scanning cannot silently retarget a different conversation
+PASS Injected transport failure retains selection and resumes existing batch
+PASS Send produces real on-disk manifests, then releases browser File bytes
+PASS Saved history can attach again without another copy
+PASS Dark skin and reduced-motion behavior render without animation requirement
+PASS 390px layout avoids horizontal overflow and dialog focus returns to trigger
+PASS No uncaught browser JavaScript exceptions

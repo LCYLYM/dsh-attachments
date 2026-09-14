@@ -1,0 +1,12 @@
+
+> dsh-multimedia-webui-input@0.2.0-rc.1 release:check
+> node scripts/release-check.mjs
+
+{
+  "version": "0.2.0-rc.1",
+  "publicReleaseReady": false,
+  "reason": [
+    "No artifacts/live-dsh.json. Fill the template only after real DSH tests."
+  ],
+  "scope": "manual native-runtime release gate; not a cryptographic attestation"
+}

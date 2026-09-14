@@ -1,0 +1,19 @@
+name: Bug report / 问题报告
+description: Reproducible attachment or drop behavior
+body:
+  - type: textarea
+    attributes:
+      label: Versions / 版本
+      description: Exact Better Attach, DSH, Node, OS and browser versions. No tokens or secrets.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps and expected behavior / 复现与预期
+      description: Drop destination, files versus folder, session, copy versus original-directory mode.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Sanitized logs / 去敏日志
+      description: Include the error code; replace private paths. Do not upload .env or credentials.

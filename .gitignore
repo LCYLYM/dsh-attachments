@@ -1,5 +1,8 @@
 node_modules/
+*.tgz
+*.zip
+__pycache__/
 .DS_Store
-.env
-coverage/
-promo/raw/
+.better-attach-baseline.json
+artifacts/live-dsh.json
+artifacts/live-evidence/

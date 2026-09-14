@@ -1,8 +1,9 @@
 {
   "name": "dsh-multimedia-webui-input",
-  "version": "0.1.0",
-  "description": "Multimedia WebUI input support for DeepSeek Harness",
+  "version": "0.2.0-rc.1",
+  "description": "Better Attach: intentional folder drops, previews and copy-on-send attachments for DeepSeek Harness.",
   "type": "module",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LCYLYM/dsh-attachments.git"
@@ -12,7 +13,7 @@
   },
   "homepage": "https://github.com/LCYLYM/dsh-attachments#readme",
   "engines": {
-    "node": "^22.19.0 || >=24.0.0"
+    "node": ">=22.16.0"
   },
   "main": "lib/index.js",
   "exports": {
@@ -43,23 +44,52 @@
     ],
     "platform": "web"
   },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "attachments",
+    "drag-and-drop",
+    "workspace"
+  ],
   "files": [
-    "cordis.patch.yml",
     "lib",
+    "src",
     "scripts",
-    "install.sh",
-    "install.ps1",
+    "demo",
     "docs",
-    "promo/assets/dsh-multimedia-webui-input-demo.gif",
+    "cordis.patch.yml",
     "README.md",
     "README.zh.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md",
+    "tests",
+    "install.sh",
+    "install.ps1",
+    "START-DEMO.sh",
+    "START-DEMO.cmd",
+    "SECURITY.md",
+    "artifacts/node-tests.tap",
+    "artifacts/browser-tests.json",
+    "artifacts/browser-tests.log",
+    "artifacts/acceptance.json",
+    "artifacts/doctor.json",
+    "artifacts/release-gate.json",
+    "artifacts/live-dsh.template.json",
+    "DELIVERY.html"
   ],
   "scripts": {
-    "test": "node --test test/*.test.mjs"
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "demo": "node demo/server.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "check": "npm run build && npm test && npm run doctor",
+    "prepack": "npm run build",
+    "release:check": "node scripts/release-check.mjs",
+    "prepublishOnly": "npm run check && npm run release:check"
   },
-  "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   }
 }

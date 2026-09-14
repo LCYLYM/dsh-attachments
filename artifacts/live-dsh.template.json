@@ -1,0 +1,24 @@
+{
+  "realDSH": false,
+  "fixture": false,
+  "repositoryCommit": "",
+  "dshVersion": "",
+  "nodeVersion": "",
+  "os": "",
+  "browser": "",
+  "testedAt": "",
+  "tester": "",
+  "checks": {
+    "installAndBoot": false,
+    "ordinaryFileSend": false,
+    "nativeImagePassThrough": false,
+    "folderConversation": false,
+    "folderSidebarCopy": false,
+    "existingHostDirectory": false,
+    "foreignReferencePreservation": false,
+    "failureRetry": false,
+    "nativeOSDirectoryDrop": false,
+    "uninstallNoCorePatch": false
+  },
+  "evidenceFiles": []
+}

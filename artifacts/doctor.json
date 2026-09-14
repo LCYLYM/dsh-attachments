@@ -1,0 +1,85 @@
+{
+  "version": "0.2.0-rc.1",
+  "node": "v22.16.0",
+  "platform": "linux",
+  "checks": [
+    {
+      "name": "packaged:lib/index.js",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:lib/client.js",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:src/dsh-client.js",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:lib/ui.css",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:cordis.patch.yml",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:LICENSE",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:README.md",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:README.zh.md",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "packaged:docs/COMPATIBILITY.md",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "identity-preserved",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "explicit-prerelease",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "zero-third-party-runtime-dependencies",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "host-apply",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "client-loader",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no-whole-draft-fallback",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "runtimeProbe": "not-requested",
+  "nativeDSHCertified": false,
+  "clientSHA256": "a266ad711c98da252c6b72c67eae13ae7eff21a73bed189b756a553c4f2e608f"
+}
