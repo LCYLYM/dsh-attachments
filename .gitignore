@@ -9,3 +9,6 @@ work/
 artifacts/live-evidence/
 recording/output/
 recording/.env
+
+.playwright-cli/
+output/

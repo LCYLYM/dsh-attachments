@@ -12,3 +12,7 @@
 :root{--ba-character:url('/assets/character.jpg')}
 
 .ba-logo{display:inline-block;width:30px;height:30px;vertical-align:middle;margin-right:10px;background:var(--ba-logo) center/contain no-repeat}
+
+.ba-dialog-foot:empty{display:none}.ba-settings .ba-options:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+/* The dock spans the conversation column; align cards with the native composer. */
+.ba-rail{width:min(calc(var(--dsh-composer-card-max-width,720px) - 16px),calc(100% - 48px));margin-inline:auto;align-self:center}

@@ -22,47 +22,52 @@ export function dispatchDrop({x,y,tree,phase}){
  const fileOf=node=>new File([Uint8Array.from(atob(node.base64),c=>c.charCodeAt(0))],node.name,{type:node.type});
  const entryOf=node=>node.directory?{name:node.name,isDirectory:true,isFile:false,createReader(){let done=false;return{readEntries(ok){queueMicrotask(()=>{ok(done?[]:node.children.map(entryOf));done=true;});}};}}:{name:node.name,isFile:true,isDirectory:false,file(ok){queueMicrotask(()=>ok(fileOf(node)));}};
  const dt=new DataTransfer();for(const node of tree)dt.items.add(node.directory?new File([],node.name):fileOf(node));
- [...dt.items].forEach((item,i)=>Object.defineProperty(item,'webkitGetAsEntry',{value:()=>entryOf(tree[i])}));
+ const items=tree.map(node=>({kind:'file',type:node.type||'',getAsFile:()=>node.directory?new File([],node.name):fileOf(node),webkitGetAsEntry:()=>entryOf(node)}));
+ Object.defineProperty(dt,'items',{value:items});
  const target=document.elementFromPoint(x,y);if(!target)throw new Error('No visible drop destination');
  target.dispatchEvent(new DragEvent(phase,{bubbles:true,cancelable:true,clientX:x,clientY:y,dataTransfer:dt}));
 }
 export async function main(){
  const url=safeOrigin(process.env.DSH_URL??'http://127.0.0.1:3080');
+ const fixtureRoot=path.resolve(process.env.RECORD_FIXTURES??path.join(HERE,'fixtures'));
  const output=path.join(HERE,'output',new Date().toISOString().replace(/[:.]/g,'-'));await fs.mkdir(output,{recursive:true});
  const {chromium}=await import('playwright');
  const ffmpeg=process.env.FFMPEG??'ffmpeg';if(spawnSync(ffmpeg,['-version'],{stdio:'ignore'}).status!==0)throw new Error('Install ffmpeg, or set FFMPEG to its executable path.');
- const browser=await chromium.launch({headless:false});let context,videoPage,report={status:'incomplete',syntheticOSDrop:true,realDSH:true,steps:[],startedAt:new Date().toISOString()};
+ const browser=await chromium.launch({headless:process.env.RECORD_HEADLESS==='1',channel:process.env.RECORD_CHANNEL||'chrome'});let context,videoPage,report={status:'incomplete',syntheticOSDrop:true,realDSH:true,steps:[],startedAt:new Date().toISOString()};
  try{
-  const setup=await browser.newContext({viewport:{width:1280,height:800}}),setupPage=await setup.newPage();await setupPage.goto(url.href);
-  console.log('在打开的 DSH 中配置模型并新建空白对话。此阶段不录制。模型、密钥留在 DSH 配置中，脚本不读取。');
-  const terminal=readline.createInterface({input:process.stdin,output:process.stdout});await terminal.question('准备好后按 Enter 开始真实录制；将发送 3 条测试消息并新建一个测试工作区。');terminal.close();
-  await setupPage.locator('[data-better-attach-toolbar]').waitFor({state:'visible',timeout:15000});
-  const target=await setupPage.url(),storageState=await setup.storageState();await setup.close();
-  context=await browser.newContext({viewport:{width:1280,height:800},storageState,recordVideo:{dir:output,size:{width:1280,height:800}}});videoPage=await context.newPage();await videoPage.goto(target);
+  let target=url.href,storageState;
+  if(process.env.RECORD_STORAGE_STATE){storageState=JSON.parse(await fs.readFile(process.env.RECORD_STORAGE_STATE,'utf8'));}
+  else {
+    const setup=await browser.newContext({viewport:{width:1280,height:800}}),setupPage=await setup.newPage();await setupPage.goto(url.href);
+    console.log('在 DSH 配置模型并新建空白对话；准备阶段不录制。');
+    const terminal=readline.createInterface({input:process.stdin,output:process.stdout});await terminal.question('准备好后按 Enter：将发送测试消息并创建工作区副本。');terminal.close();
+    await setupPage.locator('[data-better-attach-toolbar]').waitFor({state:'visible',timeout:15000});target=setupPage.url();storageState=await setup.storageState();await setup.close();
+  }
+  context=await browser.newContext({viewport:{width:1280,height:800},locale:'zh-CN',storageState,recordVideo:{dir:output,size:{width:1280,height:800}}});videoPage=await context.newPage();await videoPage.goto(target);
   await videoPage.locator('[data-better-attach-toolbar]').waitFor({state:'visible',timeout:30000});await videoPage.evaluate(installOverlay);
   const assertRunning=async()=>{if(await videoPage.evaluate(()=>window.__BA_RECORDING__?.stopped()))throw new Error('Stopped by user');};
   const wait=async ms=>{await videoPage.waitForTimeout(ms);await assertRunning();};
-  const note=async(title,text)=>{await assertRunning();await videoPage.evaluate(([a,b])=>window.__BA_RECORDING__.note(a,b),[title,text]);await wait(1100);};
+  const note=async(title,text)=>{await assertRunning();await videoPage.evaluate(([a,b])=>window.__BA_RECORDING__.note(a,b),[title,text]);console.log(title);await wait(1100);};
   const move=async(x,y)=>{await videoPage.mouse.move(x,y,{steps:20});await videoPage.evaluate(([x,y])=>window.__BA_RECORDING__.cursor(x,y),[x,y]);};
   const click=async locator=>{const b=await locator.boundingBox();if(!b)throw new Error('Target is not visible');await move(b.x+b.width/2,b.y+b.height/2);await locator.click();await wait(600);};
   const drop=async(tree,sidebar=false)=>{const marker=videoPage.locator(sidebar?'[data-better-attach-sidebar]':'[data-better-attach-toolbar]');const b=await marker.boundingBox();if(!b)throw new Error('Drop destination unavailable');const end={x:b.x+Math.min(b.width/2,55),y:b.y+b.height/2};await videoPage.evaluate(name=>window.__BA_RECORDING__.tile(name),tree.map(n=>n.name).join(', '));for(let i=0;i<=35;i++){const x=110+(end.x-110)*i/35,y=740+(end.y-740)*i/35;await move(x,y);if(i>25)await videoPage.evaluate(dispatchDrop,{x,y,tree,phase:'dragover'});await wait(16);}await videoPage.evaluate(dispatchDrop,{...end,tree,phase:'drop'});await wait(1000);};
   const confirm=async()=>{const d=videoPage.locator('.ba-dialog');await d.waitFor({state:'visible'});await click(d.locator('.ba-primary'));await d.waitFor({state:'detached',timeout:60000});};
   const evidence=async(name)=>{await videoPage.screenshot({path:path.join(output,name+'.png')});};
-  const send=async(prompt,expected)=>{const input=videoPage.locator('[contenteditable="true"][data-phase="plain"]');await input.click();await input.press('End');await input.pressSequentially(prompt,{delay:45});const before=await videoPage.locator('body').innerText();await click(videoPage.getByRole('button',{name:/^(发送消息|Send message)$/}));await videoPage.waitForFunction(({expected,before})=>{const text=document.body.innerText;return expected.every(s=>text.includes(s)&&!before.includes(s));},{expected,before},{timeout:180000});await videoPage.getByRole('button',{name:/^(停止|Stop)/}).waitFor({state:'hidden',timeout:180000});await wait(2200);};
+  const send=async(prompt,expected)=>{const input=videoPage.locator('[contenteditable="true"][data-phase="plain"]');await input.click();await input.press('End');await input.pressSequentially(prompt,{delay:45});if(!(await input.innerText()).includes(prompt))throw new Error('Composer text changed before send');const before=await videoPage.locator('body').innerText();await click(videoPage.getByRole('button',{name:/^(发送消息|Send message)$/}));await videoPage.waitForFunction(({expected,before})=>{const text=document.body.innerText;return expected.every(s=>text.split(s).length>before.split(s).length);},{expected,before},{timeout:180000});await videoPage.getByRole('button',{name:/^(停止生成|Stop generating)$/}).waitFor({state:'hidden',timeout:180000});await wait(2200);};
   await note('01 / 附件设置','两种文件处理方式，三个可选外观。');
   await click(videoPage.locator('[data-better-attach-toolbar] .ba-icon'));await videoPage.locator('.ba-dialog input[value="copy"]').check();await videoPage.locator('.ba-dialog input[value="official"]').check();await evidence('01-settings');await click(videoPage.locator('.ba-dialog-head .ba-icon'));
-  const tree=await fixtureTree(path.join(HERE,'fixtures'));
+  const tree=await fixtureTree(fixtureRoot);
   await note('02 / 图片进入对话','真实图片进入原生 DSH 图像通道，等待模型识别。');await drop(tree.filter(n=>n.name==='still-life.png'));await send('请识别这张图片中杯子、植物、本子的颜色和种类，用中文简短回答。',['蓝','多肉']);report.steps.push({name:'image',visibleEvidence:true});await evidence('02-image-response');
   await note('03 / 文件进入对话','复制模式在发送时保存文件，由模型读取原文。');await drop(tree.filter(n=>n.name==='note.md'));await confirm();await send('请读取刚添加的便笺，给出项目代号、交付数量和验收口令。',['青岚-731']);report.steps.push({name:'file',visibleEvidence:true});await evidence('03-file-response');
-  await note('04 / 文件夹进入对话','一个目录一张卡片，保留文件层级和空目录。');await drop(tree.filter(n=>n.name==='folder'));await evidence('04-folder-review');await confirm();await send('请读取刚添加目录中的 README 和它指定的入口文件，回答校验短语。',['纸舟沿河行']);report.steps.push({name:'folder',visibleEvidence:true});await evidence('05-folder-response');
+  await note('04 / 文件夹进入对话','一个目录一张卡片，保留文件层级和空目录。');await drop(tree.filter(n=>n.name==='folder'));await videoPage.getByRole('button',{name:'folder/README.md',exact:true}).waitFor();await videoPage.getByRole('button',{name:'folder/src/answer.txt',exact:true}).waitFor();await evidence('04-folder-review');await confirm();await send('请读取刚添加目录中的 README 和它指定的入口文件，回答校验短语。',['纸舟沿河行']);report.steps.push({name:'folder',visibleEvidence:true});await evidence('05-folder-response');
   await note('05 / 文件夹进入侧栏','同一个文件夹投放到侧栏，成为独立工作区副本。');await drop(tree.filter(n=>n.name==='folder'),true);await click(videoPage.locator('.ba-dialog .ba-primary'));await videoPage.getByRole('dialog',{name:/工作区已添加|Workspace added/}).waitFor({state:'visible',timeout:60000});report.steps.push({name:'workspace',successDialog:true});await evidence('06-workspace');await click(videoPage.locator('.ba-dialog-head .ba-icon'));
-  await note('06 / 原路径模式','只引用主机原文件；浏览器不公开绝对路径时，需要明确填写。');await click(videoPage.locator('[data-better-attach-toolbar] .ba-icon'));await videoPage.locator('.ba-dialog input[value="path"]').check();await videoPage.locator('.ba-dialog input[value="character"]').check();await evidence('07-path-settings');await click(videoPage.locator('.ba-dialog-head .ba-icon'));await drop(tree.filter(n=>n.name==='note.md'));await videoPage.locator('.ba-dialog input[type="text"], .ba-dialog input.ba-search').fill(path.join(HERE,'fixtures/note.md'));await confirm();report.steps.push({name:'path',added:true});await evidence('08-path-card');
+  await note('06 / 原路径模式','只引用主机原文件；浏览器不公开绝对路径时，需要明确填写。');await click(videoPage.locator('[data-better-attach-toolbar] .ba-icon'));await videoPage.locator('.ba-dialog input[value="path"]').check();await videoPage.locator('.ba-dialog input[value="character"]').check();await evidence('07-path-settings');await click(videoPage.locator('.ba-dialog-head .ba-icon'));await drop(tree.filter(n=>n.name==='note.md'));await videoPage.locator('.ba-dialog input[type="text"], .ba-dialog input.ba-search').fill(path.join(fixtureRoot,'note.md'));await confirm();report.steps.push({name:'path',added:true});await evidence('08-path-card');
   await note('录制完成','以上回复与工作区均来自真实 DSH；说明牌不属于插件。');await wait(2500);report.status='recorded';
- }catch(error){report.error=redact(error.message);console.error(report.error);}finally{
-  if(videoPage){await videoPage.evaluate(()=>window.__BA_RECORDING__?.remove()).catch(()=>{});const video=videoPage.video();await context.close();if(video)report.video=path.basename(await video.path());}
+ }catch(error){report.error=redact(error.message);console.error(report.error);if(videoPage)await fs.writeFile(path.join(output,'page.txt'),redact(await videoPage.locator('body').innerText())).catch(()=>{});}finally{
+  if(videoPage){await videoPage.evaluate(()=>window.__BA_RECORDING__?.remove()).catch(()=>{});const video=videoPage.video();await videoPage.screenshot({path:path.join(output,'last-frame.png')}).catch(()=>{});await context.close();if(video)report.video=path.basename(await video.path());}
   await browser.close();report.finishedAt=new Date().toISOString();await fs.writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));
  }
- if(report.video){const prefix=report.status==='recorded'?'walkthrough':'incomplete';const input=path.join(output,report.video);for(const [name,args] of [[prefix+'.mp4',['-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart']],[prefix+'.gif',['-vf','fps=12,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse','-loop','0']]]){const result=spawnSync(ffmpeg,['-y','-i',input,...args,path.join(output,name)],{stdio:'ignore'});if(result.status!==0)throw new Error('Video conversion failed: '+name);}
+ if(report.video){const prefix=report.status==='recorded'?'walkthrough':'incomplete';const input=path.join(output,report.video);for(const [name,args] of [[prefix+'.mp4',['-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart']],[prefix+'.gif',['-vf','fps=12,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse','-loop','0']]]){const result=spawnSync(ffmpeg,['-y','-i',input,...args,path.join(output,name)],{stdio:'ignore'});if(result.status!==0||(await fs.stat(path.join(output,name))).size===0)throw new Error('Video conversion failed: '+name);}
   if(report.status==='recorded'){const assets=path.resolve(HERE,'../docs/assets');await fs.mkdir(assets,{recursive:true});for(const ext of ['gif','mp4'])await fs.copyFile(path.join(output,'walkthrough.'+ext),path.join(assets,'walkthrough.'+ext));for(const file of ['README.md','README.zh.md']){const p=path.resolve(HERE,'..',file);const text=await fs.readFile(p,'utf8');const block='<!-- recording:start -->\n![Real DSH walkthrough](docs/assets/walkthrough.gif)\n\n[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls.\n<!-- recording:end -->';await fs.writeFile(p,text.replace(/<!-- recording:start -->[\s\S]*?<!-- recording:end -->/,block));}}
  }
  await fs.writeFile(path.join(output,'report.json'),JSON.stringify({...report,converted:!!report.video},null,2));console.log('Output: '+output);if(report.status!=='recorded')process.exitCode=1;

@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { AttachmentStore } from '../lib/store.js';
 export async function fixture(t, options={}) {
-  const root=await fs.mkdtemp(path.join(os.tmpdir(),'ba-test-'));
+  const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'ba-test-')));
   const dirs={a:path.join(root,'a'),b:path.join(root,'b')};for(const dir of Object.values(dirs))await fs.mkdir(dir);
   const registry=new Map();let calls=0;
   const config={stateRoot:path.join(root,'records'),workspaceRoot:path.join(root,'workspaces'),resolveSession:id=>dirs[id],registerWorkspace:async p=>{calls++;if(!registry.has(p))registry.set(p,{workspaceId:randomUUID(),path:p,title:path.basename(p)});return{workspace:registry.get(p),created:calls===1};},...options};

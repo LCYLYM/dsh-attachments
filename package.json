@@ -1,6 +1,6 @@
 {
   "name": "dsh-multimedia-webui-input",
-  "version": "0.3.0-rc.2",
+  "version": "0.3.0-rc.3",
   "description": "Better Attach: intentional folder drops, previews and copy-on-send attachments for DeepSeek Harness.",
   "type": "module",
   "license": "MIT",
@@ -47,21 +47,13 @@
   ],
   "files": [
     "lib",
-    "src",
     "assets",
-    "scripts",
-    "tests",
-    "docs",
-    "fixtures",
-    "artifacts",
     "cordis.patch.yml",
     "README.md",
     "README.zh.md",
     "LICENSE",
     "CHANGELOG.md",
-    "SECURITY.md",
-    "install.sh",
-    "install.ps1"
+    "SECURITY.md"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -72,7 +64,8 @@
     "release:check": "node scripts/release-check.mjs",
     "prepublishOnly": "npm run check && npm run release:check",
     "test:live:latest": "node scripts/live-dsh-smoke.mjs fixtures/dsh-latest/node_modules/@deepseek-ai/dsh/lib/bin.js 0.1.5-rc.1",
-    "test:live:next": "node scripts/live-dsh-smoke.mjs fixtures/dsh-next/node_modules/@deepseek-ai/dsh/lib/bin.js 0.1.5-rc.2"
+    "test:live:next": "node scripts/live-dsh-smoke.mjs fixtures/dsh-next/node_modules/@deepseek-ai/dsh/lib/bin.js 0.1.5-rc.2",
+    "test:browser": "node recording/verify.mjs"
   },
   "publishConfig": {
     "access": "public",
