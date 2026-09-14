@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-rc.4
+
+- Keep drag hints visible between sparse native drag events; dismiss on destination exit, drop, Escape, blur or drag end.
+- Reuse hint content and coalesce geometry updates per animation frame.
+- Animate recording drags inside the browser with one shared DataTransfer, and export the GIF at 25 fps.
+
+
 ## 0.3.0-rc.3
 
 - Align attachment cards with the native composer so retry controls remain clickable.

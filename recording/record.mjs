@@ -18,14 +18,25 @@ export function installOverlay(){
  window.__BA_RECORDING__={stopped:()=>stopped,note:(title,text)=>{shadow.querySelector('h3').textContent=title;shadow.querySelector('p').textContent=text;},cursor:(x,y)=>{pointer.style.transform=`translate(${x}px,${y}px)`;},tile:name=>{tile.querySelector('b').textContent=name;},remove:()=>{host.remove();delete window.__BA_RECORDING__;}};
 }
 /** Real File bytes enter the same drop handler; directory entries emulate the OS enumeration API. */
-export function dispatchDrop({x,y,tree,phase}){
+export function dispatchDrop({x,y,tree,phase,duration=1100}){
  const fileOf=node=>new File([Uint8Array.from(atob(node.base64),c=>c.charCodeAt(0))],node.name,{type:node.type});
  const entryOf=node=>node.directory?{name:node.name,isDirectory:true,isFile:false,createReader(){let done=false;return{readEntries(ok){queueMicrotask(()=>{ok(done?[]:node.children.map(entryOf));done=true;});}};}}:{name:node.name,isFile:true,isDirectory:false,file(ok){queueMicrotask(()=>ok(fileOf(node)));}};
  const dt=new DataTransfer();for(const node of tree)dt.items.add(node.directory?new File([],node.name):fileOf(node));
  const items=tree.map(node=>({kind:'file',type:node.type||'',getAsFile:()=>node.directory?new File([],node.name):fileOf(node),webkitGetAsEntry:()=>entryOf(node)}));
  Object.defineProperty(dt,'items',{value:items});
- const target=document.elementFromPoint(x,y);if(!target)throw new Error('No visible drop destination');
- target.dispatchEvent(new DragEvent(phase,{bubbles:true,cancelable:true,clientX:x,clientY:y,dataTransfer:dt}));
+ const dispatch=(px,py,event)=>{const target=document.elementFromPoint(px,py);if(!target)throw new Error('No visible drop destination');target.dispatchEvent(new DragEvent(event,{bubbles:true,cancelable:true,clientX:px,clientY:py,dataTransfer:dt}));};
+ if(phase==='animate')return new Promise((resolve,reject)=>{
+   const start=performance.now();
+   const tick=now=>{try{
+     if(window.__BA_RECORDING__?.stopped())throw new Error('Stopped by user');
+     const progress=Math.min(1,(now-start)/duration),ease=progress*progress*(3-2*progress);
+     const px=110+(x-110)*ease,py=740+(y-740)*ease;
+     window.__BA_RECORDING__?.cursor(px,py);
+     if(progress>.65)dispatch(px,py,'dragover');
+     if(progress<1)requestAnimationFrame(tick);else{dispatch(x,y,'drop');resolve();}
+   }catch(error){reject(error);}};requestAnimationFrame(tick);
+ });
+ dispatch(x,y,phase);
 }
 export async function main(){
  const url=safeOrigin(process.env.DSH_URL??'http://127.0.0.1:3080');
@@ -50,7 +61,7 @@ export async function main(){
   const note=async(title,text)=>{await assertRunning();await videoPage.evaluate(([a,b])=>window.__BA_RECORDING__.note(a,b),[title,text]);console.log(title);await wait(1100);};
   const move=async(x,y)=>{await videoPage.mouse.move(x,y,{steps:20});await videoPage.evaluate(([x,y])=>window.__BA_RECORDING__.cursor(x,y),[x,y]);};
   const click=async locator=>{const b=await locator.boundingBox();if(!b)throw new Error('Target is not visible');await move(b.x+b.width/2,b.y+b.height/2);await locator.click();await wait(600);};
-  const drop=async(tree,sidebar=false)=>{const marker=videoPage.locator(sidebar?'[data-better-attach-sidebar]':'[data-better-attach-toolbar]');const b=await marker.boundingBox();if(!b)throw new Error('Drop destination unavailable');const end={x:b.x+Math.min(b.width/2,55),y:b.y+b.height/2};await videoPage.evaluate(name=>window.__BA_RECORDING__.tile(name),tree.map(n=>n.name).join(', '));for(let i=0;i<=35;i++){const x=110+(end.x-110)*i/35,y=740+(end.y-740)*i/35;await move(x,y);if(i>25)await videoPage.evaluate(dispatchDrop,{x,y,tree,phase:'dragover'});await wait(16);}await videoPage.evaluate(dispatchDrop,{...end,tree,phase:'drop'});await wait(1000);};
+  const drop=async(tree,sidebar=false)=>{const marker=videoPage.locator(sidebar?'[data-better-attach-sidebar]':'[data-better-attach-toolbar]');const b=await marker.boundingBox();if(!b)throw new Error('Drop destination unavailable');const end={x:b.x+Math.min(b.width/2,55),y:b.y+b.height/2};await videoPage.evaluate(name=>window.__BA_RECORDING__.tile(name),tree.map(n=>n.name).join(', '));await videoPage.evaluate(dispatchDrop,{...end,tree,phase:'animate'});await wait(1000);};
   const confirm=async()=>{const d=videoPage.locator('.ba-dialog');await d.waitFor({state:'visible'});await click(d.locator('.ba-primary'));await d.waitFor({state:'detached',timeout:60000});};
   const evidence=async(name)=>{await videoPage.screenshot({path:path.join(output,name+'.png')});};
   const send=async(prompt,expected)=>{const input=videoPage.locator('[contenteditable="true"][data-phase="plain"]');await input.click();await input.press('End');await input.pressSequentially(prompt,{delay:45});if(!(await input.innerText()).includes(prompt))throw new Error('Composer text changed before send');const before=await videoPage.locator('body').innerText();await click(videoPage.getByRole('button',{name:/^(发送消息|Send message)$/}));await videoPage.waitForFunction(({expected,before})=>{const text=document.body.innerText;return expected.every(s=>text.split(s).length>before.split(s).length);},{expected,before},{timeout:180000});await videoPage.getByRole('button',{name:/^(停止生成|Stop generating)$/}).waitFor({state:'hidden',timeout:180000});await wait(2200);};
@@ -67,8 +78,8 @@ export async function main(){
   if(videoPage){await videoPage.evaluate(()=>window.__BA_RECORDING__?.remove()).catch(()=>{});const video=videoPage.video();await videoPage.screenshot({path:path.join(output,'last-frame.png')}).catch(()=>{});await context.close();if(video)report.video=path.basename(await video.path());}
   await browser.close();report.finishedAt=new Date().toISOString();await fs.writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));
  }
- if(report.video){const prefix=report.status==='recorded'?'walkthrough':'incomplete';const input=path.join(output,report.video);for(const [name,args] of [[prefix+'.mp4',['-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart']],[prefix+'.gif',['-vf','fps=12,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse','-loop','0']]]){const result=spawnSync(ffmpeg,['-y','-i',input,...args,path.join(output,name)],{stdio:'ignore'});if(result.status!==0||(await fs.stat(path.join(output,name))).size===0)throw new Error('Video conversion failed: '+name);}
-  if(report.status==='recorded'){const assets=path.resolve(HERE,'../docs/assets');await fs.mkdir(assets,{recursive:true});for(const ext of ['gif','mp4'])await fs.copyFile(path.join(output,'walkthrough.'+ext),path.join(assets,'walkthrough.'+ext));for(const file of ['README.md','README.zh.md']){const p=path.resolve(HERE,'..',file);const text=await fs.readFile(p,'utf8');const block='<!-- recording:start -->\n![Real DSH walkthrough](docs/assets/walkthrough.gif)\n\n[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls.\n<!-- recording:end -->';await fs.writeFile(p,text.replace(/<!-- recording:start -->[\s\S]*?<!-- recording:end -->/,block));}}
+ if(report.video){const prefix=report.status==='recorded'?'walkthrough':'incomplete';const input=path.join(output,report.video);for(const [name,args] of [[prefix+'.mp4',['-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart']],[prefix+'.gif',['-vf','fps=25,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse','-loop','0']]]){const result=spawnSync(ffmpeg,['-y','-i',input,...args,path.join(output,name)],{stdio:'ignore'});if(result.status!==0||(await fs.stat(path.join(output,name))).size===0)throw new Error('Video conversion failed: '+name);}
+  if(report.status==='recorded'){const assets=path.resolve(HERE,'../docs/assets');await fs.mkdir(assets,{recursive:true});for(const ext of ['gif','mp4'])await fs.copyFile(path.join(output,'walkthrough.'+ext),path.join(assets,'walkthrough.'+ext));for(const file of ['README.md','README.zh.md']){const p=path.resolve(HERE,'..',file);const text=await fs.readFile(p,'utf8');const block=file==='README.zh.md'?'<!-- recording:start -->\n![真实 DSH 操作演示](docs/assets/walkthrough.gif)\n\n[观看 MP4](docs/assets/walkthrough.mp4) · 真实 DSH 与模型调用，自动化拖放。录制范围仅为 DSH 网页。\n<!-- recording:end -->':'<!-- recording:start -->\n![Real DSH walkthrough](docs/assets/walkthrough.gif)\n\n[MP4](docs/assets/walkthrough.mp4) · Automated drag events, real DSH calls.\n<!-- recording:end -->';await fs.writeFile(p,text.replace(/<!-- recording:start -->[\s\S]*?<!-- recording:end -->/,block));}}
  }
  await fs.writeFile(path.join(output,'report.json'),JSON.stringify({...report,converted:!!report.video},null,2));console.log('Output: '+output);if(report.status!=='recorded')process.exitCode=1;
 }

@@ -2,7 +2,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';
 import {AttachmentManager,mountSettings,mountToolbar,pathDialog,recordCard,bindDrops} from '../lib/ui.js';
 import {createDshPlugin} from '../src/dsh-client.js';
-const dom=new JSDOM('<!doctype html><html><head></head><body></body></html>',{url:'http://127.0.0.1:3080'});
+const dom=new JSDOM('<!doctype html><html><head></head><body></body></html>',{url:'http://127.0.0.1:3080',pretendToBeVisual:true});
 for(const key of ['document','window','localStorage','HTMLElement','HTMLDialogElement','MouseEvent','Event'])Object.defineProperty(globalThis,key,{value:dom.window[key],configurable:true});
 globalThis.innerHeight=900;
 dom.window.HTMLDialogElement.prototype.showModal=function(){this.open=true;};dom.window.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new dom.window.Event('close'));};
@@ -13,3 +13,23 @@ test('toolbar opens settings with accessible controls and releases subscription'
 test('path cards show original location and use a distinct file icon',()=>{reset();const manager=new AttachmentManager();const card=recordCard(manager,{id:'path:x',sessionId:'s',mode:'path',label:'report.csv',reference:{path:'/work/report.csv',name:'report.csv',directory:false},selection:{},urls:[]});document.body.append(card);assert.match(card.textContent,/\/work\/report.csv/);assert.ok(card.querySelector('svg'));manager.dispose();});
 test('path-mode folder drop requests explicit path without enumerating or copying',()=>{reset();const manager=new AttachmentManager();manager.preferences.mode='path';const area=document.createElement('div');document.body.append(area);area.getBoundingClientRect=()=>({left:0,top:0,right:800,bottom:800,width:800,height:800});let enumerated=false;const dt={types:['Files'],items:[{kind:'file',type:'',webkitGetAsEntry:()=>({isDirectory:true,name:'folder',createReader:()=>{enumerated=true;throw new Error('must not enumerate');}}),getAsFile:()=>null}],files:[]};const dispose=bindDrops({manager,getSession:()=> 's',getConversation:()=>area,getSidebar:()=>null});const ev=new dom.window.MouseEvent('drop',{bubbles:true,cancelable:true,clientX:100,clientY:100});Object.defineProperty(ev,'dataTransfer',{value:dt});area.dispatchEvent(ev);assert.equal(ev.defaultPrevented,true);assert.equal(enumerated,false);assert.ok(document.querySelector('dialog input'));document.querySelector('dialog').close();dispose();manager.dispose();});
 test('client mounts declared slots, coexists with native image drafts and disposes effects',()=>{reset();const effects=[],registrations=[],native=[];const input={state:{getSnapshot:()=>({phase:'plain',draft:'',draftRev:0,occurrences:[]})},addAttachments:ids=>{native.push(...ids);return true;}};const services={sessions:{scope:()=>({}),list:{getSnapshot:()=>({current:'s'})}},conversation:{input:{for:()=>input},createDrafts:(_id,files)=>files.map((file,i)=>({id:'native'+i,file})),releaseDraftAttachment(){}},inputTriggers:{registerSource:()=>()=>{}},slots:{inject:(_name,fn)=>{effects.push(fn());},register:(options,Component)=>{registrations.push({options,Component});return()=>{};}}};const ctx={get:key=>services[key],effect:fn=>effects.push(fn()),inject:(_deps,fn)=>fn({...ctx,slots:services.slots})};const plugin=createDshPlugin({createElement(){}},'');const {manager}=plugin.apply(ctx);assert.deepEqual(registrations.map(x=>x.options.name),['conversation.input.left','conversation.input.dock','sidebar.footer.action','settings.section']);manager.onNativeImages('s',[{name:'image.png',type:'image/png'}]);assert.deepEqual(native,['native0']);for(const dispose of effects.reverse())dispose?.();assert.equal(document.querySelector('style[data-better-attach]'),null);assert.equal(document.documentElement.hasAttribute('data-ba-theme'),false);});
+
+test('drop hint survives sparse events, preserves content, and clears on leave or cancellation',async()=>{
+  reset();const manager=new AttachmentManager(),area=document.createElement('div');document.body.append(area);
+  area.getBoundingClientRect=()=>({left:10,top:10,right:800,bottom:800,width:790,height:790});
+  const dispose=bindDrops({manager,getSession:()=> 's',getConversation:()=>area,getSidebar:()=>null});
+  const dt={types:['Files'],items:[{kind:'file',type:'text/plain'}]};
+  const emit=(type,x=100,y=100,target=area)=>{const e=new dom.window.MouseEvent(type,{bubbles:true,cancelable:true,clientX:x,clientY:y});Object.defineProperty(e,'dataTransfer',{value:dt});target.dispatchEvent(e);return e;};
+  const paint=()=>new Promise(resolve=>window.requestAnimationFrame(resolve));
+  try{
+    assert.equal(emit('dragover').defaultPrevented,true);await paint();const hint=document.querySelector('.ba-drop-overlay'),label=hint.querySelector('strong');
+    await new Promise(resolve=>setTimeout(resolve,350));assert.equal(hint.hidden,false);
+    emit('dragleave');emit('dragover');await paint();assert.equal(hint.hidden,false);assert.equal(hint.querySelector('strong'),label);
+    emit('dragover',900,850);assert.equal(hint.hidden,true);
+    emit('dragover');emit('dragend');await paint();assert.equal(hint.hidden,true);
+    emit('dragover');await paint();document.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));emit('dragover');await paint();assert.equal(hint.hidden,true);
+    emit('dragend');emit('dragover');await paint();assert.equal(hint.hidden,false);
+    emit('dragleave',0,0,document.documentElement);assert.equal(hint.hidden,true);
+    emit('dragover');dispose();await paint();assert.equal(document.querySelector('.ba-drop-overlay'),null);
+  }finally{dispose();manager.dispose();}
+});
