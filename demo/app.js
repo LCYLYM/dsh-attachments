@@ -23,11 +23,11 @@ $('#send').onclick=async()=>{
   if(!records.length&&!text.trim()){notice('先选择一些文件，再验证传输。');return;}
   $('#send').disabled=true;
   try{
-    const receipts=[];for(const r of records)receipts.push(await manager.client(sid).send(r));
+    const receipts=[];for(const r of records)receipts.push({text:await manager.serialize(r.id),count:r.mode==='path'?0:r.selection.files.length});
     for(const r of records){r.sent=true;r.removed=true;}
     drafts.set(sid,'');if(sessionId===sid)$('#draft').value='';
-    const msg=el('article','receipt-message');msg.append(el('h3','',`真实落盘完成 · ${receipts.reduce((s,r)=>s+r.files.length,0)} 个文件`),el('p','fixture-response','未连接模型。这是服务器返回的文件清单，不是 AI 的模拟回复。'));
-    for(const receipt of receipts)msg.append(el('pre','',modelMessage(receipt)));$('#messages').append(msg);manager.changed();
+    const msg=el('article','receipt-message');msg.append(el('h3','',`真实落盘完成 · ${receipts.reduce((s,r)=>s+r.count,0)} 个文件`),el('p','fixture-response','未连接模型。这是服务器返回的文件清单，不是 AI 的模拟回复。'));
+    for(const receipt of receipts)msg.append(el('pre','',receipt.text));$('#messages').append(msg);manager.changed();
   }catch(e){notice(e.name==='AbortError'?t('cancelHint'):e.message);}finally{$('#send').disabled=false;}
 };
 $('#draft').addEventListener('input',()=>drafts.set(sessionId,$('#draft').value));

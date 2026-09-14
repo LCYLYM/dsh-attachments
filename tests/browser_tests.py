@@ -200,7 +200,7 @@ def main():
       server.terminate();server.wait(timeout=10);server_log.close()
 
 def report(error=None):
-  result={'schema':1,'version':'0.2.0-rc.1','date':'2026-09-14','mode':'in-memory-local-HTTP-bridge' if args.in_memory else 'direct-browser-http','browserNativeXHR':not args.in_memory,'realFilesystem':True,'realDSH':False,'realModel':False,'nativeOSFolderDrag':False,'playwright':importlib.metadata.version('playwright'),'tests':RESULTS,'passed':len(RESULTS),'failure':str(error) if error else None,'pageErrors':ERRORS,'httpRequests':HTTP}
+  result={'schema':1,'version':json.loads((ROOT/'package.json').read_text())['version'],'date':'2026-09-14','mode':'in-memory-local-HTTP-bridge' if args.in_memory else 'direct-browser-http','browserNativeXHR':not args.in_memory,'realFilesystem':True,'realDSH':False,'realModel':False,'nativeOSFolderDrag':False,'playwright':importlib.metadata.version('playwright'),'tests':RESULTS,'passed':len(RESULTS),'failure':str(error) if error else None,'pageErrors':ERRORS,'httpRequests':HTTP}
   (ROOT/'artifacts/browser-tests.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
 try:main()
 except Exception as e:report(e);raise

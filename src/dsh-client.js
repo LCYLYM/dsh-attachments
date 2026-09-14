@@ -1,4 +1,4 @@
-import { AttachmentManager, mountToolbar, mountRail, bindDrops, sidebarContainer, chooseFiles, showHistory, button, el, t, notice } from '../lib/ui.js';
+import { AttachmentManager, mountToolbar, mountRail, bindDrops, sidebarContainer, chooseFiles, showHistory, button, el, t, notice, mountSettings } from '../lib/ui.js';
 import { assert } from '../lib/policy.js';
 export const SOURCE = 'multimedia-webui-input';
 /** Public state uses clipboard offsets; scoped edit spans use one detect character per chip. */
@@ -35,16 +35,18 @@ export function createDshPlugin(React,cssText){
     const current=()=>{const value=sessions.list?.getSnapshot?.().current;return typeof value==='string'?value:activeSession;};
     const manager=new AttachmentManager({
       nativeImages:true,
+      onNativeImages:(id,files)=>{const drafts=conversation.createDrafts(id,files);if(!inputFor(id).addAttachments(drafts.map(d=>d.id))){for(const d of drafts)conversation.releaseDraftAttachment(d.id);throw new Error(t('blocked'));}},
       isEditable:id=>{try{return inputFor(id).state.getSnapshot().phase==='plain';}catch{return false;}},
       onAdd:r=>addReference(inputFor(r.sessionId),r),
       onRemove:r=>removeReference(inputFor(r.sessionId),r,request=>sessions.scope(r.sessionId).bail('slash/input-insert-text',request)),
       onOpenWorkspace:workspace=>{const ui=ctx.get('uiWorkspace');assert(typeof ui?.openWorkspace==='function','navigation-unavailable','Workspace was registered. Open it from the native sidebar.');return ui.openWorkspace(workspace.workspaceId);}
     });
     ctx.effect(()=>{
+      const oldTheme=document.documentElement.dataset.baTheme;document.documentElement.dataset.baTheme=manager.preferences.theme;
       const style=el('style');style.dataset.betterAttach='v2';style.textContent=cssText;document.head.append(style);
-      const unload=e=>{if([...manager.records.values()].some(r=>!r.removed&&!r.receipt)){e.preventDefault();e.returnValue='';}};
+      const unload=e=>{if([...manager.records.values()].some(r=>!r.removed&&!r.receipt&&r.mode!=='path')){e.preventDefault();e.returnValue='';}};
       window.addEventListener('beforeunload',unload);
-      return()=>{window.removeEventListener('beforeunload',unload);style.remove();manager.dispose();};
+      return()=>{window.removeEventListener('beforeunload',unload);style.remove();document.querySelectorAll('.ba-dialog').forEach(d=>d.close());document.querySelectorAll('.ba-toasts').forEach(n=>n.remove());if(oldTheme===undefined)delete document.documentElement.dataset.baTheme;else document.documentElement.dataset.baTheme=oldTheme;manager.dispose();};
     },'better-attach: browser lifetime');
     ctx.effect(()=>triggers.registerSource({trigger:'@',name:SOURCE,order:1000,candidates:async()=>[],onPick:()=>undefined,codec:{clipboardText:ref=>{const r=manager.records.get(ref);return r?`[Better Attach: ${r.label}; ${ref}]`:`[Missing Better Attach: ${ref}]`;},serialize:(ref,signal)=>manager.serialize(ref,signal)}}),'better-attach: attachment codec');
     function Toolbar(props){const ref=React.useRef(null);React.useEffect(()=>{const node=ref.current;composerMarker=node;activeSession=props.baSessionId;const clear=mountToolbar(ref.current,manager,()=>props.baSessionId);return()=>{if(composerMarker===node)composerMarker=null;clear();};},[props.baSessionId]);return h('div',{ref,'data-better-attach-toolbar':''});}
@@ -53,9 +55,7 @@ export function createDshPlugin(React,cssText){
       const unsub=input.state.subscribe(()=>manager.changed());return()=>{unsub();clear();};
     },[props.baSessionId]);return h('div',{ref});}
     function Sidebar(props){const ref=React.useRef(null);React.useEffect(()=>{const node=ref.current;sidebarMarker=node;const b=button(t('import'),()=>chooseFiles(manager,'@workspace-import',true,'workspace'),'ba-button ba-quiet ba-sidebar-button','folder');if(props.wide===false)b.querySelector('span').className='ba-hidden';b.title=t('import');ref.current.replaceChildren(b);return()=>{if(sidebarMarker===node)sidebarMarker=null;};},[props.wide]);return h('div',{ref,'data-better-attach-sidebar':''});}
-    function Settings(){const ref=React.useRef(null);React.useEffect(()=>{
-      const node=ref.current;node.classList.add('ba-toolbar');node.append(el('p','ba-muted','Better Attach · 0.2.0-rc.1 · loopback-only integration candidate'),button(t('history'),()=>showHistory(manager,current()).catch(e=>notice(e.message)),'ba-button','clock'),button(t('import'),()=>chooseFiles(manager,'@workspace-import',true,'workspace'),'ba-button','folder'),el('p','ba-caption',t('browserMemory')));return()=>node.replaceChildren();
-    },[]);return h('section',{ref});}
+    function Settings(){const ref=React.useRef(null);React.useEffect(()=>mountSettings(ref.current,manager),[]);return h('section',{ref});}
     ctx.inject(['slots','conversation','sessions','inputTriggers'],scope=>{
       scope.slots.inject('conversation.input.left',()=>scope.slots.register({name:'conversation.input.left',id:'better-attach-toolbar',order:-100,inject:id=>({baSessionId:id})},Toolbar));
       scope.slots.inject('conversation.input.dock',()=>scope.slots.register({name:'conversation.input.dock',id:'better-attach-rail',order:5,inject:id=>({baSessionId:id})},Rail));

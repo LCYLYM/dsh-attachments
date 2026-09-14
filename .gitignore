@@ -4,5 +4,6 @@ node_modules/
 __pycache__/
 .DS_Store
 .better-attach-baseline.json
-artifacts/live-dsh.json
+artifacts/live-evidence/
+work/
 artifacts/live-evidence/

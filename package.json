@@ -1,6 +1,6 @@
 {
   "name": "dsh-multimedia-webui-input",
-  "version": "0.2.0-rc.1",
+  "version": "0.3.0-rc.1",
   "description": "Better Attach: intentional folder drops, previews and copy-on-send attachments for DeepSeek Harness.",
   "type": "module",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/LCYLYM/dsh-attachments#readme",
   "engines": {
-    "node": ">=22.16.0"
+    "node": "^22.19.0 || >=24.0.0"
   },
   "main": "lib/index.js",
   "exports": {
@@ -27,22 +27,15 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-ui-input-trigger",
         "@deepseek-ai/dsh-client-ui-conversation",
-        "@deepseek-ai/dsh-client-ui-settings"
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-workspace"
       ],
       "platform": "web"
     }
-  },
-  "dshClient": {
-    "inject": [
-      "@deepseek-ai/dsh-client-runtime",
-      "@deepseek-ai/dsh-client-ui-input-trigger",
-      "@deepseek-ai/dsh-client-ui-conversation",
-      "@deepseek-ai/dsh-client-ui-settings"
-    ],
-    "platform": "web"
   },
   "keywords": [
     "dsh",
@@ -55,28 +48,23 @@
   "files": [
     "lib",
     "src",
+    "assets",
     "scripts",
+    "tests",
     "demo",
     "docs",
+    "fixtures",
+    "artifacts",
     "cordis.patch.yml",
     "README.md",
     "README.zh.md",
     "LICENSE",
     "CHANGELOG.md",
-    "tests",
+    "SECURITY.md",
     "install.sh",
     "install.ps1",
     "START-DEMO.sh",
-    "START-DEMO.cmd",
-    "SECURITY.md",
-    "artifacts/node-tests.tap",
-    "artifacts/browser-tests.json",
-    "artifacts/browser-tests.log",
-    "artifacts/acceptance.json",
-    "artifacts/doctor.json",
-    "artifacts/release-gate.json",
-    "artifacts/live-dsh.template.json",
-    "DELIVERY.html"
+    "START-DEMO.cmd"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -86,10 +74,15 @@
     "check": "npm run build && npm test && npm run doctor",
     "prepack": "npm run build",
     "release:check": "node scripts/release-check.mjs",
-    "prepublishOnly": "npm run check && npm run release:check"
+    "prepublishOnly": "npm run check && npm run release:check",
+    "test:live:latest": "node scripts/live-dsh-smoke.mjs fixtures/dsh-latest/node_modules/@deepseek-ai/dsh/lib/bin.js 0.1.5-rc.1",
+    "test:live:next": "node scripts/live-dsh-smoke.mjs fixtures/dsh-next/node_modules/@deepseek-ai/dsh/lib/bin.js 0.1.5-rc.2"
   },
   "publishConfig": {
     "access": "public",
     "tag": "next"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
   }
 }
