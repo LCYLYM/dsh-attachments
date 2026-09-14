@@ -72,7 +72,7 @@ Loopback access only. Text previews are bounded to 128 KiB; image previews to 20
 
 Unsent browser selections need reselecting after reload. Saved files and successful message sends are tracked separately. Explicit cleanup affects this plugin's current-session copies, preserving originals, registered workspaces and legacy files. DSH owns native message-history rendering.
 
-Finder/Explorer drag-and-drop still needs manual confirmation. Windows and GitHub Actions have not been executed here. The candidate retains the `next` release tag; see the verification record for exact scope.
+Finder/Explorer cross-window drag-and-drop and Windows desktop interactions still need manual confirmation. Linux/Windows CI checks passed on Node.js 22.19.0 and 24. The candidate retains the `next` release tag; see the verification record for exact scope.
 
 Uninstall with `npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input`, then restart DSH.
 

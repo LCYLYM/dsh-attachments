@@ -29,6 +29,8 @@ npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-inpu
 
 已验证：真实 DSH 网页、原生图片发送与模型识别、普通文件和目录的真实读取、原目录工作区注册、引用路径、设置持久化、预览、窄屏和上传失败重试。详见 [验收记录](ACCEPTANCE.md)。
 
-待确认：Finder/Explorer 跨窗口原生拖放、Windows 实机和 GitHub Actions。原生拖放尝试未取得可靠的成功读回，因此不以自动化事件替代该项。
+Linux/Windows CI 的 Node.js 22.19.0、24 检查及 Linux 宿主联调已通过。
+
+待确认：Finder/Explorer 跨窗口原生拖放与 Windows 桌面操作。原生拖放尝试未取得可靠的成功读回，因此不以自动化事件替代该项。
 
 仅支持同机回环同源 HTTP；远程浏览器与反向代理部署不在此版范围。PDF、Office、音视频、压缩包提供下载。未发送的本地文件选择刷新后需要重选。

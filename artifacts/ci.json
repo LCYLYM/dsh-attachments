@@ -1,0 +1,27 @@
+{
+  "url": "https://github.com/LCYLYM/dsh-attachments/actions/runs/34854298969",
+  "headCommit": "81861329ce0662c2d0920f02582b670c7785ba0a",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "live-host",
+      "conclusion": "success"
+    },
+    {
+      "name": "core (windows-latest, 24)",
+      "conclusion": "success"
+    },
+    {
+      "name": "core (ubuntu-latest, 24)",
+      "conclusion": "success"
+    },
+    {
+      "name": "core (windows-latest, 22.19.0)",
+      "conclusion": "success"
+    },
+    {
+      "name": "core (ubuntu-latest, 22.19.0)",
+      "conclusion": "success"
+    }
+  ]
+}

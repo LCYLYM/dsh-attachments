@@ -72,7 +72,7 @@ npm run test:live:next
 
 未发送文件选择保存在页面内，刷新后需要重选。已保存附件与“消息发送成功”分开记录。清理只删除当前会话的插件副本；旧版附件、原文件与已注册工作区保留。原生消息历史由 DSH 渲染。
 
-Finder/Explorer 原生拖放仍待人工确认，Windows 和 GitHub Actions 未实跑。候选版保持 `next` 发布标签，具体已验证范围见验收记录。
+Finder/Explorer 原生跨窗口拖放与 Windows 桌面操作仍待人工确认。Linux/Windows 的 Node.js 22.19.0、24 CI 检查已通过。候选版保持 `next` 发布标签，具体已验证范围见验收记录。
 
 卸载：`npx --yes @deepseek-ai/dsh plugin --profile web remove dsh-multimedia-webui-input`，然后重启 DSH。
 

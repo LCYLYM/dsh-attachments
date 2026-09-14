@@ -1,10 +1,10 @@
 {
   "archive": "dsh-multimedia-webui-input-0.3.0-rc.5.tgz",
   "productionExcludesRecording": true,
-  "testsPassed": 75,
+  "testsPassed": 76,
   "testsFailed": 0,
   "fileCount": 21,
-  "archiveBytes": 253700,
+  "archiveBytes": 253754,
   "builtClientSHA256": "024cea564140827dd518f4aa217d8f3bafee64180c454760c6f571b7fd5def74",
   "readmesMatchWorkingTree": true
 }
