@@ -1,4 +1,4 @@
-# Better Attach 0.3.0-rc.3
+# Better Attach 0.3.0-rc.4
 
 先看 [中文 README](README.zh.md)，或直接播放 [操作视频](docs/assets/walkthrough.mp4)。GIF、视频仅录制 DSH 网页，操作和模型回复来自真实宿主。
 
@@ -26,7 +26,7 @@ git log --oneline
 
 ## 验证范围
 
-72 项核心测试、两版 DSH 各 9 项宿主联调、9 项真实浏览器检查和 4 项录制辅助测试通过。实际模型完成图片识别、便笺与目录读取，工作区副本及路径引用也经过验证。
+73 项核心测试、两版 DSH 各 9 项宿主联调、9 项真实浏览器检查和 4 项录制辅助测试通过。实际模型完成图片识别、便笺与目录读取，工作区副本及路径引用也经过验证。
 
 OS 原生跨窗口拖放仍待确认，完整发布门禁保持 BLOCKED。Windows 与 GitHub Actions 未运行。详细证据见 [验收记录](docs/ACCEPTANCE.md)。
 

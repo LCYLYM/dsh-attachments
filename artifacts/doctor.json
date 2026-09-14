@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0-rc.3",
+  "version": "0.3.0-rc.4",
   "node": "v24.13.1",
   "platform": "darwin",
   "checks": [
@@ -81,5 +81,5 @@
   ],
   "runtimeProbe": "not-requested",
   "nativeDSHCertified": false,
-  "clientSHA256": "99234475f9e95ad5957a78f4658ecc7a241db156b014c4b007e3fc62596ee11f"
+  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8"
 }

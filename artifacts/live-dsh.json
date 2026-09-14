@@ -38,12 +38,12 @@
       "status": "passed"
     }
   ],
-  "clientSHA256": "99234475f9e95ad5957a78f4658ecc7a241db156b014c4b007e3fc62596ee11f",
+  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8",
   "nodeVersion": "v24.13.1",
   "os": "darwin",
   "realDSH": true,
   "dshVersion": "0.1.5-rc.2",
-  "testedAt": "2026-09-14T09:51:41.451Z",
+  "testedAt": "2026-09-14T12:25:49.793Z",
   "browser": "Not covered by this host-only test",
-  "logs": "dsh web: http://127.0.0.1:63140/?token=REDACTED\n"
+  "logs": "dsh web: http://127.0.0.1:61713/?token=REDACTED\n"
 }

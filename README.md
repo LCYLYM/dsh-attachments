@@ -18,7 +18,7 @@ Folder review, file previews and copy/path settings for [DeepSeek Harness](https
 
 ## Try it locally
 
-Candidate **0.3.0-rc.3** requires Node.js `^22.19.0 || >=24.0.0`. Verified CLI versions: `0.1.5-rc.1` (latest) and `0.1.5-rc.2` (next). Fixture lockfiles pin the component versions used in verification.
+Candidate **0.3.0-rc.4** requires Node.js `^22.19.0 || >=24.0.0`. Verified CLI versions: `0.1.5-rc.1` (latest) and `0.1.5-rc.2` (next). Fixture lockfiles pin the component versions used in verification.
 
 Extract the source to a permanent directory:
 

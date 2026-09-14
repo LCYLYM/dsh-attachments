@@ -1,0 +1,12 @@
+{
+  "baselineCommit": "855359ce4158bd77daf966d5c41ea69219cd9c75",
+  "realDSH": true,
+  "syntheticOSDrop": true,
+  "eventIntervalMs": 350,
+  "baseline": {
+    "rebuilds": 6,
+    "hiddenFrames": 38,
+    "frames": 84
+  },
+  "currentEvidence": "drag-motion.json"
+}

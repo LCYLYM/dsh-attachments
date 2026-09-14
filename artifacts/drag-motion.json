@@ -1,0 +1,38 @@
+{
+  "realDSH": true,
+  "syntheticOSDrop": true,
+  "checks": [
+    {
+      "name": "hint remains visible across sparse dragover events without rebuilding content",
+      "status": "PASS"
+    },
+    {
+      "name": "child leaves preserve hint; destination exit clears it",
+      "status": "PASS"
+    },
+    {
+      "name": "viewport leave and Escape clear the hint and cancel pending frames",
+      "status": "PASS"
+    },
+    {
+      "name": "conversation and sidebar show the matching destination",
+      "status": "PASS"
+    },
+    {
+      "name": "recording drag moves on animation frames and opens a real file review without hint rebound",
+      "status": "PASS"
+    }
+  ],
+  "sampling": {
+    "rebuilds": 0,
+    "hiddenFrames": 0,
+    "frames": 107
+  },
+  "cadence": {
+    "frames": 68,
+    "p95GapMs": 17.40000009536743,
+    "maxGapMs": 17.5,
+    "durationMs": 1107.2000000476837
+  },
+  "clientSHA256": "75c389c8258ca2fd7946b9a5bd881d7b3f1ccd635dd73b27c4af9fcc1cc061b8"
+}
