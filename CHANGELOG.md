@@ -1,13 +1,16 @@
 # Changelog
 
-## 0.2.0-rc.1 — Better Attach / 2026-09-14
+## 0.3.0-rc.1
 
-Contract-based integration candidate for the LCYLYM project; see source provenance. This is not a claim that the full original repository was cloned or that real DSH acceptance passed.
+- Installed and tested real DSH CLI 0.1.5-rc.1 and 0.1.5-rc.2.
+- Replaced obsolete client runtime dependency with current module owners.
+- Added persisted copy/path settings, session-scoped path references, bounded preview, copy-path and reattachment history.
+- Added native image-draft integration for pure-image picking.
+- Added file-type icons and native, blue-gradient and optional character appearance.
+- Added real-host smoke runner, exact DSH dependency locks and DOM simulation regressions.
+- Preserved the original repository history and imported the supplied 0.2.0-rc.1 candidate as a separate commit.
+- Real rendered-browser, model and desktop OS acceptance remains pending.
 
-Added destination-aware folder drops, visible preflight/exclusions, empty-directory handling, sidebar workspace-copy registration, explicit original host-directory registration, safe image/text preview, history/download/reattachment, and single-session cleanup. Added cancellation, two-worker raw uploads, content checks, idempotent batch commits and restartable receipts.
+## 0.2.0-rc.1
 
-Kept original npm/loader/source identity and copy-on-send intent. Native image-only drops pass through. Replaced destructive whole-draft edits with guarded scoped text-edit events and clipboard-to-detect coordinate conversion. No native workspace-list replacement or core UI patch.
-
-Added deterministic dependency-free build, local lab, 58 core/contract/overlay tests, 20 executed UI-bridge checks, screenshots, bilingual README, market submission materials and a native-runtime release gate.
-
-Known boundaries: loopback-only; native DSH/OS drag unverified; unsent browser selections are volatile; no old metadata migration, native transcript-card renderer, PDF/Office parsing, or automatic original-path guessing.
+User-supplied candidate import. Historical code, reports and screenshots are retained in Git history; they are not current release evidence.

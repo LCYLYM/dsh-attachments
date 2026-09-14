@@ -1,7 +1,7 @@
 {
-  "realDSH": false,
+  "realDSH": true,
   "fixture": false,
-  "repositoryCommit": "",
+  "repositoryCommit": "FILL_AFTER_TESTING",
   "dshVersion": "",
   "nodeVersion": "",
   "os": "",

@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "real client boot graph includes Better Attach with resolvable dependencies",
+      "status": "passed"
+    },
+    {
+      "name": "real DSH session creation",
+      "status": "passed"
+    },
+    {
+      "name": "registered plugin HTTP health",
+      "status": "passed"
+    },
+    {
+      "name": "copy mode upload and commit into real session cwd",
+      "status": "passed"
+    },
+    {
+      "name": "history uses the real session",
+      "status": "passed"
+    },
+    {
+      "name": "path mode references original without copying",
+      "status": "passed"
+    },
+    {
+      "name": "original directory registers with real DSH workspace controller",
+      "status": "passed"
+    },
+    {
+      "name": "folder copy registers as real DSH workspace",
+      "status": "passed"
+    },
+    {
+      "name": "session cleanup preserves path originals",
+      "status": "passed"
+    }
+  ],
+  "clientSHA256": "1268d6a4b3dde30f153706f44938a7a7b74f79314507291ff93dfd59232d6644",
+  "nodeVersion": "v24.19.0",
+  "os": "linux",
+  "realDSH": true,
+  "dshVersion": "0.1.5-rc.1",
+  "testedAt": "2026-09-14T06:56:37.384Z",
+  "browser": "Not tested: ERR_BLOCKED_BY_CLIENT",
+  "logs": "dsh: all_proxy names a SOCKS proxy, which is not supported; connecting directly for that scheme — set an http:// or https:// proxy URL instead\ndsh web: http://127.0.0.1:3080/?token=REDACTED\n"
+}

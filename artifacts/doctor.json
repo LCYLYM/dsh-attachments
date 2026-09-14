@@ -1,6 +1,6 @@
 {
-  "version": "0.2.0-rc.1",
-  "node": "v22.16.0",
+  "version": "0.3.0-rc.1",
+  "node": "v24.19.0",
   "platform": "linux",
   "checks": [
     {
@@ -81,5 +81,5 @@
   ],
   "runtimeProbe": "not-requested",
   "nativeDSHCertified": false,
-  "clientSHA256": "a266ad711c98da252c6b72c67eae13ae7eff21a73bed189b756a553c4f2e608f"
+  "clientSHA256": "1268d6a4b3dde30f153706f44938a7a7b74f79314507291ff93dfd59232d6644"
 }

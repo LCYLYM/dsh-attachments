@@ -1,0 +1,8 @@
+{
+  "archive": "dsh-multimedia-webui-input-0.3.0-rc.1.tgz",
+  "builtClientSHA256": "1268d6a4b3dde30f153706f44938a7a7b74f79314507291ff93dfd59232d6644",
+  "rebuildIdentical": true,
+  "testsPassed": 72,
+  "testsFailed": 0,
+  "dependencySetup": "Reused already installed development dependencies via node_modules symlink; extracted package scripts and sources executed."
+}

@@ -1,36 +1,9 @@
-# Source provenance / 来源与改造边界
+# Provenance / 来源
 
-As of 2026-09-14.
+公开仓库 https://github.com/LCYLYM/dsh-attachments 完整克隆成功，原始提交 028dc1f。先把本轮提供的 better-attach-v0.2.0-rc.1-source(1).zip 作为单独提交导入，再进行增量修改。ZIP 内含完整 .git，另附 Git bundle。没有认证用户的 GitHub 账户，没有推送或发布。
 
-The requested upstream is https://github.com/LCYLYM/dsh-attachments . Public metadata, README, `package.json`, `cordis.patch.yml`, and the existing `lib/client.js` were inspected through web retrieval. The original client used the npm identity `dsh-multimedia-webui-input`, loader identity of the same name, `multimedia-webui-input` reference source, session-bound reference serialization, and copy-on-send batches.
+官方参考仓库 https://github.com/deepseek-ai/deepseek-harness 已克隆，检索时 HEAD c291e7961a515f6d7af9304e7fd1d257929aef26。兼容测试以真正安装的 npm 发行包为准，不把 master 内容等同于发行版。
 
-**A full Git clone did not succeed in the execution environment. The original host `lib/index.js` was not successfully retrieved. No exact upstream commit SHA was established.** This archive is consequently a newly authored, contract-based candidate—not a preserved checkout, a verified diff against every upstream file, or a security audit of the unseen host implementation. It contains no fabricated `.git` directory or fabricated original-host source.
+DSH CLI 默认标签 0.1.5-rc.1，next 0.1.5-rc.2。本次实际依赖见 fixtures 下两套锁文件及 artifacts/dsh-resolved-versions.json。可选角色图片来自用户本轮上传。
 
-Preserved by design: package/loader/reference identities, standard bundle patch, ordinary session references and copy-on-send intent. Reimplemented: browser UI/intake, raw stream storage/API v2, host/public-slot adapters, tests and developer tooling. Added: folder-to-sidebar workflow, explicit existing-host-directory registration, previews and lifecycle reporting. No competitor's source code or Emil's skill text was vendored.
-
-The v2 storage and HTTP namespaces are separate from the old plugin. Existing old files are not deleted or silently migrated. Old pending browser File selections cannot be recovered by this archive. Disabling the old version before installing the candidate avoids duplicate source IDs/drop listeners.
-
-## Apply to the actual project
-
-Keep a real local clone. When network access is available, the optional helper retrieves that actual clone and records the real HEAD:
-
-```bash
-node scripts/fetch-upstream.mjs /path/to/dsh-attachments-upstream
-node scripts/overlay.mjs /path/to/dsh-attachments-upstream
-node scripts/overlay.mjs /path/to/dsh-attachments-upstream --apply
-```
-
-The overlay does not delete unlisted files and does not touch `.git`. It creates a sibling backup before changing any listed existing file. `--restore` uses the exact printed backup path. Restoration deliberately reverts the listed paths; save any edits made after applying the overlay before restoring. Empty created directories may remain. The overlay itself was exercised against a synthetic Git-shaped checkout; it was not run against the user's real repository.
-
-Review package metadata, installer conflicts, the replaced host implementation, and any existing custom patches before committing. The network-retrieval helper is supplied but successful network execution is not claimed here.
-
-## Evidence classification
-
-| Item | Evidence |
-| --- | --- |
-| User repository metadata/client design | Public source inspection |
-| Official API/slot/input behavior | Public `master` source inspection; not a pinned release certification |
-| This candidate's core/filesystem/HTTP | Actual local automated execution |
-| Browser layout/intake/dialogs | Actual Chromium, in-memory HTML with explicitly substituted local transport |
-| Workspace registry and DSH input/editor in tests | Deliberately small test substitutes |
-| Git clone, native DSH, real model, physical OS drag | Not verified |
+没有把 jsdom、demo 或历史测试截图包装成真实 DSH 浏览器证据。

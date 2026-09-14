@@ -1,56 +1,39 @@
-# 实际验收记录 · Better Attach 0.2.0-rc.1
+# Acceptance / 验收
 
-执行日期：2026-09-14。此文件记录本次执行范围，不能代替某台真实 DSH 的安装证明。机器结果在 `artifacts/acceptance.json`，原始结果在 `artifacts/node-tests.tap` 与 `artifacts/browser-tests.json`。
+## 本轮结果
 
-## 已执行
+| 检查 | 实际结果 | 证据 |
+| --- | --- | --- |
+| Node 核心、HTTP、存储、引用、编辑器契约、DOM 模拟 | 72 passed, 0 failed | artifacts/current-node-tests.tap |
+| DSH latest CLI 0.1.5-rc.1 | 9 项真实宿主联调通过 | artifacts/live-dsh-latest.json |
+| DSH next CLI 0.1.5-rc.2 | 9 项真实宿主联调通过 | artifacts/live-dsh.json |
+| 真实 DSH 图形界面 | 未运行成功 | ERR_BLOCKED_BY_CLIENT |
+| 实际模型回复、Windows/macOS 人工拖放 | 未执行 | 不作认证 |
 
-**58 项 Node 自动测试通过**，0 失败、0 跳过。环境 Linux、Node 22.16.0。测试运行真实 Node HTTP 服务与真实临时文件系统，不是只检查返回字符串。覆盖路径遍历、NFC/大小写别名、父文件冲突、实际字节数、SHA-256、零字节文件、嵌套和空目录、取消、半途失败、同批重试、原子提交、workspace 注册失败恢复、并发、符号链接、跨会话边界、24 小时暂存回收和原目录保留。
+真实宿主测试通过官方 CLI 启动完整 web profile，额外挂载仅在临时目录存在的测试插件。它调用真实 SessionController、WorkspaceController，并通过 HTTP 上传字节和检查磁盘；没有替换这些宿主服务。客户端启动图和实际服务的脚本也经过检查。DOM 测试使用 jsdom 和显式服务替身，不能当作浏览器验收。
 
-输入接口测试同时覆盖单字符引用投影与较长 clipboard 投影，验证删除/插入本插件引用不重建其他插件引用。宿主与编辑器是小型明确的接口替身，**不是运行了真正 Cordis 与 Lexical 编辑器**。覆盖脚本测试在临时的 Git 形状目录验证预览、备份、覆盖、恢复和无关文件保留，不冒充用户仓库上的真实 git diff。
+9 项内容：客户端启动图与脚本、创建会话、插件路由、会话副本与空目录、附件记录、原路径引用、原目录注册、文件夹副本注册、清理不删除原文件。测试均不调用远程模型。
 
-**20 项 Chromium UI 测试通过**，该次执行 0 个未捕获页面异常。包括目录预检、排除项、暂存时未复制、文件选择入口、文本转义、实际图片 Blob 解码、会话切换、删除撤回、纯图片事件放行、文本/内部拖拽放行、侧栏工作区副本、非法侧栏文件禁用确认、原目录注册、Escape、扫描时目标固定、传输失败重试、提交释放浏览器 File、保存记录再附加、暗色/减少动态效果及 390px 窄屏。
+历史 rc.1 的 20 项内存浏览器测试和截图没有作为本版证据复用；旧提交中仍可查看。
 
-## 浏览器测试到底如何执行
+## 本地复跑
 
-本环境 Chromium 的管理策略禁止页面导航。没有修改 URLBlocklist、删除管理策略或把这种限制描述成“网络真的可用”。使用 `page.set_content` 载入内存 HTML，同一套 UI/客户端模块通过明确标注的本地测试桥与真实 Node HTTP 服务通信。
+根目录 `npm ci && npm run check`。
 
-该桥使用 XHR 外形替身与受限的本地请求 binding，因此 **浏览器原生 XHR、网络取消与上传进度的端到端行为未在此模式中验证**。Node HTTP 流和存储另有实际测试。页面、事件和弹窗是真实 Chromium；目录拖放由合成 FileSystemEntry 触发，并非操作系统 Finder/Explorer 实际拖动。工作区注册使用测试注册表，没有伪装成真实 DSH。
+`npm ci --prefix fixtures/dsh-latest && npm run test:live:latest`。
 
-演示与测试不会请求模型，不消耗模型 token，也不会把你的真实目录作为测试附件。截图的测试桥标签保留可见。`walkthrough.gif` 是实际测试截图按步骤拼成的演示，不是连续录屏，更不是原生 DSH 录屏。
+`npm ci --prefix fixtures/dsh-next && npm run test:live:next`。
 
-## 没有执行或没有通过的范围
+真实宿主测试只向自动创建的临时 DSH_HOME 和测试目录写入，结束后清除测试文件；不会修改用户的默认 DSH_HOME。
 
-| 项目 | 状态 |
-| --- | --- |
-| 完整 Git 克隆与原 host 源码比较 | 网络获取失败；未取得原 host、未确定原 HEAD |
-| 实际 DSH 安装/启动/发送/卸载 | 未执行 |
-| 真实模型读取导入文件、原生图片视觉链路 | 未执行 |
-| macOS/Windows 与 Finder/Explorer 目录拖放 | 未执行 |
-| Chromium 直接 HTTP 导航模式 | 本环境受策略限制；脚本及 CI 路径已提供但未执行 |
-| 最大 1 GiB/2 GiB、1 万文件性能跑分 | 未执行；这些只是输入准入上限 |
-| GitHub Actions、GitHub push、npm publish、市场提交 | 未执行 |
-| 公开版本发布门禁 | 实际执行并失败，原因是缺少真实 DSH 证据 |
+## 发版前的人工验收
 
-## 复现命令
+1. 安装到独立 DSH_HOME 并在浏览器打开原生 DSH，检查设置入口、深浅色、窄屏与键盘焦点。
+2. 拖普通文件和含空目录的文件夹到对话，检查预览、删除、重试、发送后清单。
+3. 拖文件夹到侧栏，检查复制副本与原目录注册两种流程，打开对应工作区。
+4. 设置引用路径，检查不存在路径、原文件修改、替换文件、复制路径、刷新后记录再附加。
+5. 发送纯图片，确认模型实际收到原生图像；再测试混合文件夹路径读取。
+6. 在 Finder/Explorer 人工拖放，确认没有浏览器导航或目标漂移。
+7. 卸载并重启，确认界面还原，已有文件保留。
 
-```bash
-npm run check
-npm pack
-npm run demo
-```
-
-普通开发机的浏览器测试：
-
-```bash
-python -m pip install playwright==1.57.0
-python -m playwright install chromium
-python tests/browser_tests.py --chromium /absolute/path/to/chromium
-```
-
-本次执行模式为 `python tests/browser_tests.py --in-memory`，必须保留其模式标签。不能将报告的 `realDSH` 或 `browserNativeXHR` 手工改成 true 当作完成验证。
-
-## 交付验收与发布验收分开
-
-源码、可生成浏览器 bundle、npm 候选包、无第三方运行依赖演示、测试、双语 README、竞品研究、市场提交说明均随包交付。原生 DSH 兼容与实际仓库改造仍需要相应环境的验证。本包是**可以继续集成和测试的候选实现**，不是对未验证事实的保证。
-
-发布前请填写 `artifacts/live-dsh.template.json` 中的真实结果，记录候选 Git 提交与去敏证据文件。`npm run release:check` 有意在缺少这些证据时失败；`prepublishOnly` 也会调用该门禁。`npm pack` 与本地运行不受这个发布门禁阻碍。
+将实测结果及截图记录到 artifacts/native-acceptance.json，再运行 npm run release:check。此门禁继承自上传的候选版，不要求为本地开发申请权限。

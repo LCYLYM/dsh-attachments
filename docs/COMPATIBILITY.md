@@ -1,38 +1,26 @@
-# Compatibility and native acceptance
+# Compatibility / 安装与兼容
 
-## This delivery is an integration candidate
+本次真实安装：npm `@deepseek-ai/dsh@0.1.5-rc.1`（latest）和 `@deepseek-ai/dsh@0.1.5-rc.2`（next），Node v24.19.0，Linux。每版完成 9 项宿主验收，详见 ACCEPTANCE.md。默认 CLI 的依赖范围会拉取较新的内部组件；fixtures 中保留安装锁文件，不能只凭 CLI 版本推断所有依赖版本。
 
-The adapter targets public contracts visible in DeepSeek Harness `master` on 2026-09-14. `master`, an npm release, and the user's installed version are not interchangeable. No particular native DSH version is certified by this archive. The older repository's claimed compatibility is not inherited as our test result.
+## 已修复的客户端依赖
 
-Executed here: Linux, Node 22.16.0, Python 3.13.5, Playwright 1.57.0 and the installed Chromium. The package's dependency-free core can run on that Node version. For DSH installation, use the Node version that the actual DSH release requires; observed upstream/community material used `^22.19.0 || >=24.0.0`.
+旧候选版声明已不存在的 `@deepseek-ai/dsh-client-runtime`。新版改用发行版的 session-controller、ui-renderer、ui-input-trigger、ui-conversation、ui-settings、ui-workspace。真实 Host 生成的客户端启动图包含本插件、所有声明依赖，并能通过 HTTP 返回构建后的插件脚本。
 
-## Required public surfaces
+UI 使用 settings.section、conversation.input.left、conversation.input.dock、sidebar.footer.action 这四个可追加插槽，保留官方图片和原生工作区界面。此处已做接口及 DOM 模拟测试，但没有渲染器浏览器验收结论。
 
-Host: `webServer.register({kind:'prefix',path,handler})`, `sessions.get(id).header.cwd`. Workspace import additionally requires `workspaceController.create({path})`, returning a `workspace` with `workspaceId` and `path`. This optional capability is resolved lazily, not cached permanently as unavailable during startup.
+## 安装和回退
 
-Client: `sessions.scope(id)`, `conversation.input.for(scope)`, input state/`insertReference`, input trigger source codec, and the session-scoped `slash/input-insert-text` bail event. The local edit converts clipboard offsets to the detect projection, where each reference chip occupies one position. It never uses private Lexical imports or a whole-draft reset to remove a chip.
+`sh install.sh` 或 PowerShell `./install.ps1` 调用官方 `dsh plugin --profile web add <checkout>`。使用固定路径存放解压目录。关闭再启动 DSH 后生效。
 
-Slots: `conversation.input.left`, `conversation.input.dock`, `sidebar.footer.action`, and `settings.section`. Sidebar geometry is found from the mounted footer marker, not a hardcoded left-X boundary. The native workspace list is not replaced. Opening a registered workspace optionally uses `uiWorkspace.openWorkspace`.
+卸载运行 `dsh plugin --profile web remove dsh-multimedia-webui-input` 并重启。回退旧插件时，重新安装旧目录或旧 npm 包。不会自动删除原文件、工作区目录或插件副本。
 
-The test input implements those contracts; it is not the real Lexical editor. Source review exposed why `setDraft` would be destructive and informed a regression test, but only live acceptance can establish compatibility with a particular assembled DSH profile.
+如果希望隔离试用，可在新终端设置自己的 DSH_HOME 再运行安装和启动命令；不要覆盖原来的配置目录。真实验收脚本已自动这样处理。
 
-## Native verification procedure
+## 尚未验证
 
-Use a separate DSH test configuration and disposable workspace. Disable the previous version and other file-drop plugins first. Record exact DSH/Node/OS/browser versions and this candidate's Git commit. Install from the extracted directory using the normal `web` profile command, inspect `--dump-config`, and start the host.
+- 内置浏览器访问本地地址返回 ERR_BLOCKED_BY_CLIENT，未完成真实 DSH 页面渲染、截图或原生上传入口验收。
+- 无模型 API 凭证，未验证模型实际收图、工具读取与回复。
+- 无 Windows/macOS 实机，未验证 Finder/Explorer 人工目录拖放。
+- 未运行 GitHub Actions、发布 npm 或向市场提交收录。
 
-1. Confirm the UI appears once; unload/reload and confirm listeners/slots do not duplicate. Add a normal text file, send a harmless request to list the manifest, and verify the model has the referenced file available.
-2. Drop a raster image alone: native thumbnail and real vision behavior should remain native. Drop image+file together: verify path-attachment wording and do not count it as native vision.
-3. Drop a nested folder with an empty subdirectory into a conversation. Check exclusions, defer-write behavior, filename paths, cancel/retry, and a session switch during scanning. Test actual Finder/Explorer drag in addition to synthetic events.
-4. Drop a folder on expanded and collapsed sidebar. Verify one real workspace registration and correct copy path; then test the explicitly entered original host path and ensure no copy appears.
-5. Keep another plugin's reference before and after a Better Attach reference. Add/remove/undo/send and verify unrelated chips retain identity. Exercise send failure plus immediate typing while the official detached-send flow restores earlier content.
-6. Check saved history after page/host restart, reattach, preview, cleanup, missing-file errors, and uninstall. Record that core DSH bundles are unchanged.
-
-Copy `artifacts/live-dsh.template.json` to `artifacts/live-dsh.json` only when recording real results. Add redacted logs/screenshots, then run `npm run release:check`. A read-only `doctor --url ... --session ...` probe only validates route/session access and must not be promoted to those full results.
-
-```bash
-node scripts/doctor.mjs --url http://127.0.0.1:PORT --session ACTUAL_SESSION_ID
-```
-
-## Explicit exclusions
-
-Remote or reverse-proxied browser use, subagent attachment intake, current-model vision support, native transcript-card replacement, v1 metadata migration, native file-picker recovery after refresh, filesystem modes/symlinks, recursive `.gitignore` semantics, and large-directory performance at maximum limits are not certified. PDF/Office/archive parsing is not implemented. Current mixed-drop semantics are intentional path attachments.
+路径模式在普通浏览器中需要明确输入 DSH 主机路径；上传副本不需要路径。仅支持同机回环同源 HTTP。PDF/Office/音视频当前仅下载。
