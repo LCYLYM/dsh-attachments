@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 test('LF and CRLF source checkouts produce identical client bundles',async t=>{
  const temp=await fs.mkdtemp(path.join(os.tmpdir(),'ba-build-'));t.after(()=>fs.rm(temp,{recursive:true,force:true}));
- const sources=['lib/policy.js','lib/preferences.js','lib/intake.js','lib/client-api.js','lib/ui.js','src/dsh-client.js','lib/ui.css','assets/logo.svg'];
+ const sources=['lib/policy.js','lib/preferences.js','lib/intake.js','lib/client-api.js','lib/native-drop-client.js','lib/ui.js','src/dsh-client.js','lib/ui.css','assets/logo.svg'];
  for(const file of [...sources,'assets/character.jpg','scripts/build.mjs']){const dest=path.join(temp,file);await fs.mkdir(path.dirname(dest),{recursive:true});await fs.copyFile(path.join(root,file),dest);}
  const build=()=>execFileSync(process.execPath,[path.join(temp,'scripts/build.mjs')],{stdio:'pipe'});
  for(const file of sources){const dest=path.join(temp,file);await fs.writeFile(dest,(await fs.readFile(dest,'utf8')).replace(/\r\n?/g,'\n'));}

@@ -27,4 +27,15 @@ jobs:
           node-version: '24'
       - run: npm ci --prefix fixtures/dsh-latest
       - run: npm run test:live:latest
+  mac-native:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: npm run build:native -- --all
+      - run: npm run check
+      - run: npm pack --dry-run
 # Real GUI recording is an explicit local task, not a production plugin feature.

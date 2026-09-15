@@ -20,9 +20,9 @@ One folder, two destinations. Workspaces use the original host directory.
 `dsh` · `dsh-plugin` · `deepseek-harness` · `attachments` · `drag-and-drop` · `workspace`
 
 <!-- recording:start -->
-![Better Attach · 真实 DSH 拖放演示 / Real DSH walkthrough](docs/assets/walkthrough.gif)
+![Better Attach · rc.5 功能演示 / rc.5 walkthrough](docs/assets/walkthrough.gif)
 
-[观看视频 / Watch MP4](docs/assets/walkthrough.mp4) · 仅录制 DSH 网页；自动化拖放，真实文件与模型调用。 / DSH page only; automated drags with real files and model calls.
+[观看 rc.5 视频 / Watch rc.5 MP4](docs/assets/walkthrough.mp4) · 此视频展示 rc.5；rc.6 的工具栏、附件布局与 macOS 路径桥接以本文说明为准。 / This video shows rc.5; see below for rc.6 layout and macOS path-bridge behavior.
 <!-- recording:end -->
 
 ## 中文
@@ -40,15 +40,36 @@ Better Attach 是 [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Har
 | 复制副本（默认） | 发送时保存副本，已保存内容不随原文件后续编辑改变。 |
 | 引用路径 | 引用主机上的原文件或目录，模型读取其当前内容。 |
 
-**拖到侧边栏：把原目录作为工作区。** 侧栏始终注册原目录，独立于对话附件设置。拖放数据提供原绝对路径时直接添加；浏览器未提供路径时，选择或填写运行 DSH 的主机上的原目录。
+**拖到侧边栏：把原目录作为工作区。** 侧栏始终注册原目录，独立于对话附件设置。macOS 上，从 Finder 把一个文件夹拖到 DSH 侧边栏，插件自动获取绝对路径并注册原目录。**一次拖一个文件夹**；同时拖多个时会提示分别拖入。
+
+拖拽提示由插件统一显示，独立图片仍通过 DSH 原生视觉接口添加。对话附件卡片独立横向滚动；工具栏图标可悬停查看名称。
+
+### 平台支持
+
+| 能力 | macOS | Windows / Linux |
+| --- | --- | --- |
+| 对话文件、文件夹附件及预览 | 支持 | 支持 |
+| 选择或填写原目录，创建工作区 | 支持 | 支持 |
+| Finder 拖入侧边栏，自动取得原绝对路径 | 支持，需随包附带原生桥接 | 尚不支持；需选择或填写主机目录 |
+
+macOS 桥接随 DSH 插件启动和退出，仅在当前可见 DSH 页面的侧边栏收到真实拖拽时请求路径。切换标签页、离开侧边栏或取消拖动会取消请求；桥接不创建接收窗口。浏览器和 DSH 必须运行在同一台机器上。Windows 自动路径桥接仍是待完成能力。
 
 ### 安装
 
-当前候选版本 **0.3.0-rc.5**，需要 Node.js `^22.19.0 || >=24.0.0`。已验证的 DSH CLI 为 `0.1.5-rc.1` 和 `0.1.5-rc.2`，依赖版本由 fixtures 锁文件记录。
-
-将源码保存在固定目录，运行：
+当前预发布版本 **0.3.0-rc.6**，需要 Node.js `^22.19.0 || >=24.0.0`。推荐下载 [GitHub Releases](https://github.com/LCYLYM/dsh-attachments/releases/tag/v0.3.0-rc.6) 中的 `.tgz` 包，包含 Apple Silicon 和 Intel Mac 桥接程序。
 
 ```sh
+npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/dsh-multimedia-webui-input-0.3.0-rc.6.tgz
+npx --yes @deepseek-ai/dsh web
+```
+
+从 Git 源码安装时，先在固定源码目录构建。macOS 的原生构建需要 Xcode Command Line Tools：
+
+```sh
+npm ci
+npm run build
+# macOS only / 仅 macOS：
+npm run build:native
 npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/better-attach
 npx --yes @deepseek-ai/dsh web
 ```
@@ -70,7 +91,7 @@ npx --yes @deepseek-ai/dsh web
 
 未发送的文件选择保存在页面内，刷新后需重选。清理仅删除当前会话的插件副本，保留原文件与工作区。文件落盘和模型消息成功分别记录；原生消息历史由 DSH 渲染。
 
-真实 DSH、模型调用和浏览器流程已验证，Linux/Windows 的 Node.js 22.19.0、24 CI 检查通过。Finder/Explorer 原生跨窗口拖放与 Windows 桌面操作仍待人工确认，完整范围见[验收记录](docs/ACCEPTANCE.md)。
+本次 macOS Finder 单文件夹工作区拖入、对话拖放与最终界面由用户在真实 DSH 测试后确认。自动检查覆盖事件隔离、多目录反馈和原目录注册；Windows 自动路径桥接与桌面验收尚未完成。验证范围见[原生路径说明](docs/NATIVE_DROP.md)，历史检查见[验收记录](docs/ACCEPTANCE.md)。
 
 卸载后重启 DSH：
 
@@ -93,15 +114,36 @@ Choose the conversation attachment mode in **Settings → Better Attach** or **A
 | Copy files (default) | Save a copy when sending; later edits to the original do not change that copy. |
 | Reference paths | Reference an original host file or directory; the model reads its current contents. |
 
-**Drop into the sidebar to use the original directory as a workspace.** Sidebar registration is independent of conversation attachment settings. An absolute original path supplied by the drop is registered directly; otherwise select or enter the original directory on the DSH host.
+**Drop into the sidebar to use the original directory as a workspace.** On macOS, drag one folder from Finder into the DSH sidebar to resolve its absolute path and register the original directory. **One folder per drop**; multiple folders produce a message asking you to drop them separately. Conversation attachment settings do not change workspace registration.
+
+One plugin-owned drag hint covers both destinations. Standalone images still use native DSH vision attachments. Attachment cards scroll horizontally above the composer; hover over compact toolbar icons for their labels.
+
+### Platform support
+
+| Capability | macOS | Windows / Linux |
+| --- | --- | --- |
+| Conversation files, folders and previews | Supported | Supported |
+| Create a workspace by selecting or entering its original path | Supported | Supported |
+| Resolve the original path automatically from a Finder sidebar drop | Supported with the packaged native helper | Not available; select or enter the host directory |
+
+The macOS helper starts and stops with the plugin. Path requests are scoped to real drags over the visible DSH page's sidebar. Leaving the sidebar, switching tabs or cancelling cancels the request. The helper creates no receiving window. Browser and DSH must run on the same machine. Windows automatic path integration remains unfinished.
 
 ### Install
 
-Current candidate: **0.3.0-rc.5**. Requires Node.js `^22.19.0 || >=24.0.0`. Verified DSH CLI versions are `0.1.5-rc.1` and `0.1.5-rc.2`; fixture lockfiles record the dependencies used.
-
-Keep the source in a permanent directory:
+Current prerelease: **0.3.0-rc.6**. Requires Node.js `^22.19.0 || >=24.0.0`. Download the `.tgz` from [GitHub Releases](https://github.com/LCYLYM/dsh-attachments/releases/tag/v0.3.0-rc.6); it includes Apple Silicon and Intel Mac helpers.
 
 ```sh
+npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/dsh-multimedia-webui-input-0.3.0-rc.6.tgz
+npx --yes @deepseek-ai/dsh web
+```
+
+For installation from Git source, build in a permanent directory first. Native macOS compilation requires Xcode Command Line Tools:
+
+```sh
+npm ci
+npm run build
+# macOS only:
+npm run build:native
 npx --yes @deepseek-ai/dsh plugin --profile web add /absolute/path/to/better-attach
 npx --yes @deepseek-ai/dsh web
 ```
@@ -123,7 +165,7 @@ Loopback access only. Ordinary browsers generally omit original absolute paths, 
 
 Unsent file selections live in the page and must be reselected after reload. Cleanup affects only this plugin's current-session copies, preserving original files and workspaces. Saved files and successful model messages are tracked separately; DSH owns native message history.
 
-Real DSH integration, model calls and browser flows have been verified. Linux/Windows CI passed on Node.js 22.19.0 and 24. Finder/Explorer cross-window native dragging and Windows desktop interactions still need manual confirmation. See [verification](docs/ACCEPTANCE.md) for scope.
+The user confirmed macOS Finder single-folder workspace drops, conversation drops and the final interface against real DSH. Automated checks cover event isolation, multiple-directory feedback and original-directory registration. Windows automatic path integration and desktop acceptance remain unfinished. See [native path scope](docs/NATIVE_DROP.md) and [historical verification](docs/ACCEPTANCE.md).
 
 Uninstall, then restart DSH:
 

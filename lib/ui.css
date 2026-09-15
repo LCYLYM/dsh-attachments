@@ -14,5 +14,10 @@
 .ba-logo{display:inline-block;width:30px;height:30px;vertical-align:middle;margin-right:10px;background:var(--ba-logo) center/contain no-repeat}
 
 .ba-dialog-foot:empty{display:none}.ba-settings .ba-options:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.ba-path-field{display:flex;flex-direction:column;gap:10px;margin:16px 0 8px}.ba-path-field .ba-search{margin:0;padding:11px 14px}
+.ba-drop-overlay{gap:18px;padding:28px}.ba-drop-overlay strong,.ba-drop-overlay span{margin:0;line-height:1.6;max-width:100%;overflow-wrap:anywhere}
 /* The dock spans the conversation column; align cards with the native composer. */
-.ba-rail{width:min(calc(var(--dsh-composer-card-max-width,720px) - 16px),calc(100% - 48px));margin-inline:auto;align-self:center}
+.ba-rail{width:min(var(--dsh-composer-card-max-width,720px),calc(100% - 32px));margin:0 auto 10px;align-self:center;flex:none;min-height:0;max-height:180px;display:flex;flex-wrap:nowrap;gap:10px;padding:6px 2px 10px;overflow-x:auto;overflow-y:auto;scrollbar-width:thin}
+.ba-rail:empty{display:none}.ba-rail>.ba-card{flex:0 0 min(300px,100%);min-width:0;max-width:100%;align-self:stretch;margin:0}.ba-card-meta{margin:4px 0 0}.ba-card-main{overflow:hidden}
+.ba-toolbar{flex-wrap:nowrap;gap:4px;min-width:0}.ba-toolbar>.ba-button{width:32px;height:32px;min-width:32px;padding:7px}.ba-toolbar>.ba-button>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:600px){.ba-toolbar{gap:0}.ba-toolbar>.ba-button,.ba-toolbar>.ba-icon{width:30px;min-width:30px;padding:6px}.ba-rail{width:calc(100% - 24px);max-height:150px}}

@@ -2,11 +2,55 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';
 import {AttachmentManager,mountSettings,mountToolbar,pathDialog,recordCard,bindDrops} from '../lib/ui.js';
 import {createDshPlugin} from '../src/dsh-client.js';
+import {isWorkspaceDrag} from '../lib/native-drop-client.js';
 const dom=new JSDOM('<!doctype html><html><head></head><body></body></html>',{url:'http://127.0.0.1:3080',pretendToBeVisual:true});
 for(const key of ['document','window','localStorage','HTMLElement','HTMLDialogElement','MouseEvent','Event'])Object.defineProperty(globalThis,key,{value:dom.window[key],configurable:true});
 globalThis.innerHeight=900;
 dom.window.HTMLDialogElement.prototype.showModal=function(){this.open=true;};dom.window.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new dom.window.Event('close'));};
 const reset=()=>{document.body.replaceChildren();localStorage.clear();delete document.documentElement.dataset.baTheme;};
+test('multiple workspace folders give visible feedback without registering or opening a path dialog',()=>{
+ reset();const area=document.createElement('aside');document.body.append(area);area.getBoundingClientRect=()=>({left:0,top:0,right:200,bottom:800,width:200,height:800});
+ const manager=new AttachmentManager(),dispose=bindDrops({manager,getSession:()=>null,getSidebar:()=>area,getConversation:()=>null});
+ const files=[{name:'one'},{name:'two'}],dt={types:['Files'],files,items:files.map(file=>({kind:'file',getAsFile:()=>file}))};
+ const event=new dom.window.MouseEvent('drop',{bubbles:true,cancelable:true,clientX:100,clientY:100});Object.defineProperty(event,'dataTransfer',{value:dt});
+ area.dispatchEvent(event);assert.equal(event.defaultPrevented,true);assert.match(document.querySelector('.ba-toast').textContent,/one workspace folder at a time|一次只能拖入一个文件夹/);assert.equal(document.querySelector('dialog'),null);assert.equal(manager.records.size,0);
+ dispose();manager.dispose();
+});
+test('Finder drag does not require keyboard focus, but requires this visible DSH sidebar',()=>{
+ reset();const area=document.createElement('aside'),marker=document.createElement('div');marker.dataset.betterAttachSidebar='';area.append(marker);document.body.append(area);
+ area.getBoundingClientRect=()=>({left:0,top:20,right:200,bottom:800,width:200,height:780});
+ const event={isTrusted:true,clientX:100,clientY:100};
+ assert.equal(document.hasFocus(),false);
+ assert.equal(isWorkspaceDrag(event,area),true);
+ assert.equal(isWorkspaceDrag({...event,isTrusted:false},area),false);
+ assert.equal(isWorkspaceDrag({...event,clientX:400},area),false);
+ Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});
+ assert.equal(isWorkspaceDrag(event,area),false);delete document.visibilityState;
+ marker.remove();assert.equal(isWorkspaceDrag(event,area),false);
+ area.remove();assert.equal(isWorkspaceDrag(event,area),false);
+});
+test('external file lifecycle has one overlay owner and still uses native image attachments',async()=>{
+ reset();const area=document.createElement('div');document.body.append(area);
+ area.getBoundingClientRect=()=>({left:10,top:10,right:800,bottom:800,width:790,height:790});
+ let nativeCount=0,foreignDepth=1,resets=0;
+ const foreignEnter=()=>foreignDepth++,foreignDrop=()=>{foreignDepth=0;},foreignReset=()=>{foreignDepth=0;resets++;};
+ document.addEventListener('dragenter',foreignEnter);document.addEventListener('drop',foreignDrop);window.addEventListener('dragend',foreignReset);
+ const manager=new AttachmentManager({onNativeImages:(id,files)=>{assert.equal(id,'s');nativeCount+=files.length;}});
+ const dispose=bindDrops({manager,getSession:()=> 's',getConversation:()=>area,getSidebar:()=>null});
+ const file=new dom.window.File(['image'],'image.png',{type:'image/png'});
+ const dt={types:['Files'],files:[file],items:[{kind:'file',type:'image/png',getAsFile:()=>file}]};
+ const emit=type=>{const e=new dom.window.MouseEvent(type,{bubbles:true,cancelable:true,clientX:100,clientY:100});Object.defineProperty(e,'dataTransfer',{value:dt});area.dispatchEvent(e);};
+ try{
+  assert.equal(resets,1);assert.equal(foreignDepth,0);
+  emit('dragenter');emit('dragover');await new Promise(r=>window.requestAnimationFrame(r));
+  assert.equal(foreignDepth,0);assert.equal(document.querySelector('.ba-drop-overlay').hidden,false);
+  emit('drop');assert.equal(nativeCount,1);assert.equal(foreignDepth,0);assert.equal(document.querySelector('.ba-drop-overlay').hidden,true);
+  emit('dragenter');emit('dragover');await new Promise(r=>window.requestAnimationFrame(r));window.dispatchEvent(new dom.window.Event('blur'));
+  assert.equal(document.querySelector('.ba-drop-overlay').hidden,true);
+  const textDrag=new dom.window.Event('dragenter',{bubbles:true});Object.defineProperty(textDrag,'dataTransfer',{value:{types:['text/plain']}});area.dispatchEvent(textDrag);
+  assert.equal(foreignDepth,1,'internal text drags retain their own handlers');
+ }finally{dispose();manager.dispose();document.removeEventListener('dragenter',foreignEnter);document.removeEventListener('drop',foreignDrop);window.removeEventListener('dragend',foreignReset);}
+});
 test('mode and appearance controls persist, rerender and restore no-image mode',()=>{reset();const manager=new AttachmentManager(),node=document.createElement('div');document.body.append(node);const dispose=mountSettings(node,manager);node.querySelector('input[value=path]').click();assert.equal(manager.preferences.mode,'path');node.querySelector('input[value=character]').click();assert.equal(document.documentElement.dataset.baTheme,'character');assert.equal(new AttachmentManager().preferences.theme,'character');node.querySelector('input[value=plain]').click();assert.equal(document.documentElement.dataset.baTheme,'plain');dispose();assert.equal(node.childElementCount,0);manager.dispose();});
 test('path dialog validates asynchronously and displays errors without dismissing input',async()=>{reset();const manager=new AttachmentManager();manager.addPath=async()=>{throw new Error('Path does not exist');};const view=pathDialog(manager,'session');view.body.querySelector('input').value='/missing';view.footer.querySelector('.ba-primary').click();await new Promise(r=>setTimeout(r,0));assert.match(view.body.textContent,/Path does not exist/);assert.equal(view.d.open,true);assert.equal(view.footer.querySelector('.ba-primary').disabled,false);view.d.close();manager.dispose();});
 test('toolbar opens settings with accessible controls and releases subscription',()=>{reset();const manager=new AttachmentManager(),node=document.createElement('div');document.body.append(node);const dispose=mountToolbar(node,manager,()=> 's');node.querySelector('.ba-icon').click();assert.equal(document.querySelectorAll('dialog input[type=radio]').length,5);document.querySelector('dialog').close();dispose();assert.equal(manager.listeners.size,0);manager.dispose();});

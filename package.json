@@ -1,6 +1,6 @@
 {
   "name": "dsh-multimedia-webui-input",
-  "version": "0.3.0-rc.5",
+  "version": "0.3.0-rc.6",
   "description": "Better Attach: intentional folder drops, previews and copy-on-send attachments for DeepSeek Harness.",
   "type": "module",
   "license": "MIT",
@@ -47,6 +47,7 @@
   ],
   "files": [
     "lib",
+    "native",
     "assets",
     "cordis.patch.yml",
     "README.md",
@@ -55,6 +56,7 @@
     "SECURITY.md"
   ],
   "scripts": {
+    "build:native": "node scripts/build-native.mjs",
     "build": "node scripts/build.mjs",
     "test": "node scripts/test.mjs",
     "doctor": "node scripts/doctor.mjs",

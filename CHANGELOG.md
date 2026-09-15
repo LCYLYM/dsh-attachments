@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0-rc.6
+
+- Resolve original workspace directory paths from macOS Finder drops through a windowless Swift helper scoped to the visible DSH sidebar.
+- Own the full file-drag event lifecycle while preserving DSH native image attachments.
+- Present attachment cards in a separate scrollable row with compact toolbar controls.
+- Explain the one-folder-per-workspace-drop limit with visible feedback.
+- Document platform capabilities, packaged Mac helpers and source installation in one bilingual README.
+- Windows automatic path integration remains unavailable; host directory selection and manual paths are supported.
+
 ## 0.3.0-rc.5
 
 - Sidebar drops register the original host directory, independently of conversation attachment mode.
